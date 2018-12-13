@@ -42,11 +42,10 @@ class Rules:
                         if x == x_start and y == y_start:
                             break
                         tiles_to_flip.append([x, y])
-
-                grid[y_start][x_start] = 0  # restore the empty space
-                if len(tiles_to_flip) == 0:  # If no tiles were flipped, this is not a valid move.
-                    return False
-                return tiles_to_flip
+        grid[y_start][x_start] = 0  # restore the empty space
+        if len(tiles_to_flip) == 0:  # If no tiles were flipped, this is not a valid move.
+            return False
+        return tiles_to_flip
 
     def get_valid_move(self, grid, tile):
         # Returns a list of [x,y] lists of valid moves for the given player on the given board.
