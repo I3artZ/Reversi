@@ -6,7 +6,7 @@ grey = (180, 180, 155)
 white = (255, 255, 255)
 l_grey = (220, 220, 200)
 black = (0, 0, 0)
-red = (255, 0, 0)
+yellow = (240, 190, 0)
 
 
 class Menu:
@@ -103,7 +103,7 @@ class Menu:
             if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + rect.height:
                 rect.color = l_grey
             elif rect.pressed:
-                rect.color = red
+                rect.color = yellow
             else:
                 rect.color = grey
 
@@ -130,7 +130,7 @@ class Menu:
         a = [1 for rect in self.rects if rect.pressed]
         if sum(a) == 3 and self.rect_17.left < self.game.pos[0] < self.rect_17.width + self.rect_17.left:
             if self.rect_17.top < self.game.pos[1] < self.rect_17.top + self.rect_17.height:
-                self.rect_17.color = red
+                self.rect_17.color = yellow
                 self.game.menu.state = False
                 self.game.game_status = True
 

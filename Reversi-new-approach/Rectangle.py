@@ -1,6 +1,5 @@
 import pygame
 
-
 class Rectangle():
     def __init__(self, screen, left, top, width, height, color, pressed=False, player_type=None):
         self.left = left

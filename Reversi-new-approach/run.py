@@ -28,15 +28,14 @@ class Game:
 
         # grid's cell size
         self.grid_size = 0
-        #self.rules = Rules(self)
-        self.turn = 1
+
         # player 1 (black)
         self.player_1 = ""
         # player 2 (white)
         self.player_2 = ""
         # program loop
         while not self.close:
-
+            self.turn = 1
             while self.menu.state:
                 self.screen_width = 800
                 self.screen_height = 500
@@ -51,7 +50,7 @@ class Game:
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                         self.menu.state = False  # quit menu loop
                         self.close = True        # quit main loop
-                    if event.type == pygame.MOUSEBUTTONDOWN:  # choosing settings
+                    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # choosing settings
                         self.menu.press_button()
                         # passing chosen player 1 type
                         for rect in self.menu.player_1:
@@ -92,7 +91,6 @@ class Game:
 
             # game loop
             while self.game_status:
-
                 # changing size of screen to fit chosen board
                 self.screen_width = self.grid_size * (self.board.cell_size + self.board.margin) + self.board.margin
                 self.screen_height = self.grid_size * (self.board.cell_size + self.board.margin) + 50 + self.board.margin
@@ -112,6 +110,8 @@ class Game:
                         self.menu.state = True
                     # print(self.board.grid)
                     # print(column, row)
+                    for x, y in self.rules.get_valid_move(self.board.grid, self.turn):
+                            self.board.grid[y][x] = 3
                     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.turn == 1 and self.rules.is_valid_move(self.board.grid, 1, column, row):
                         self.player_1.make_a_move(row, column)
                         if self.rules.get_valid_move(self.board.grid, 2) == []:
@@ -125,9 +125,11 @@ class Game:
                             self.turn = 2
                         else:
                             self.turn = 1
-
+                isinstance(self.player_1,Human)
                 #resizing screen to match board size
                 self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
+                # getting a score
+                self.score = self.rules.getScoreOfBoard(self.board.grid)
                 # drawing a board
                 self.board.draw()
                 pygame.display.flip()

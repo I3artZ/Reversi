@@ -67,7 +67,7 @@ class Rules:
             grid[y][x] = tile
         return True
     
-    def getScoreOfBoard(self,board):
+    def getScoreOfBoard(self, board):
     # Determine the score by counting the tiles. Returns a dictionary with keys '1' and '2'.
     # We should add our heuristics here
         xscore = 0
@@ -81,8 +81,8 @@ class Rules:
         return {1:xscore, 2:oscore}
 
     def IsTerminalNode(self, player):
-        possibleMoves = self.get_valid_move(self.game.board.grid,player)
+        possibleMoves = self.get_valid_move(self.game.board.grid, player)
         if possibleMoves.__len__ == 0:
             return False
         return True
-    
+

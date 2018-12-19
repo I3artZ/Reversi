@@ -1,11 +1,11 @@
 import random
 import copy
 
+
 class Human:
     def __init__(self, game, player):
         self.game = game
         self.player = player
-
     def make_a_move(self, row, column):
             # black turn
             # print(self.game.board.grid)
