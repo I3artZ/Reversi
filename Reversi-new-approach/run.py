@@ -3,10 +3,12 @@ from menu import Menu
 from board import Board
 from rules import Rules
 from players import Human, MinMax, MonteCarlo
+
 # some colors
 black = (20, 20, 20)
 green_menu = (0, 135, 10)
 red = (0, 0, 255)
+
 
 class Game:
 
@@ -92,17 +94,16 @@ class Game:
             while self.game_status:
 
                 # changing size of screen to fit chosen board
-                #self.screen_width = self.grid_size * (self.board.cell_size + self.board.margin) + self.board.margin
-                self.screen_width = self.grid_size * (self.board.cell_size + self.board.margin)
-                #self.screen_height = self.grid_size * (self.board.cell_size + self.board.margin) + 55
-                self.screen_height = self.grid_size * (self.board.cell_size + self.board.margin)# + 5
+                self.screen_width = self.grid_size * (self.board.cell_size + self.board.margin) + self.board.margin
+                self.screen_height = self.grid_size * (self.board.cell_size + self.board.margin) + 50 + self.board.margin
 
                 for event in pygame.event.get():
                     self.pos = pygame.mouse.get_pos()
                     x = self.pos[0]
                     y = self.pos[1]
-                    column = x // (self.board.cell_size + self.board.margin)
-                    row = y // (self.board.cell_size + self.board.margin)
+                    if x < (self.screen_width - self.board.margin) and 50 < y < (self.screen_height - self.board.margin):
+                        column = x // (self.board.cell_size + self.board.margin)
+                        row = (y-50) // (self.board.cell_size + self.board.margin)
                     if event.type == pygame.QUIT:
                         self.game_status = False
                         self.menu.state = True
@@ -124,6 +125,8 @@ class Game:
                             self.turn = 2
                         else:
                             self.turn = 1
+
+                #resizing screen to match board size
                 self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
                 # drawing a board
                 self.board.draw()

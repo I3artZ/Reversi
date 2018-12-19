@@ -41,4 +41,6 @@ class Board:
                     color = white
                 else:
                     color = green
-                pygame.draw.rect(self.game.screen, color, [self.margin + (self.margin + self.cell_size) * column, self.margin + (self.margin + self.cell_size) * row, self.cell_size, self.cell_size])
+                pygame.draw.rect(self.game.screen, color, [self.margin + (self.margin + self.cell_size) * column,
+                                                           self.margin + 50 + (self.margin + self.cell_size) * row,
+                                                           self.cell_size, self.cell_size])
