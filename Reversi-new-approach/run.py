@@ -22,10 +22,9 @@ class Game:
 
         self.clock = pygame.time.Clock()
         self.pos = []
-        self.menu = Menu(self)
         self.close = False
         self.game_status = False
-
+        #self.menu = Menu(self)
         # grid's cell size
         self.grid_size = 0
 
@@ -36,6 +35,7 @@ class Game:
         # program loop
         while not self.close:
             self.turn = 1
+            self.menu = Menu(self)
             while self.menu.state:
                 self.screen_width = 800
                 self.screen_height = 500
@@ -70,7 +70,6 @@ class Game:
                     self.menu.highlight()
                     pygame.display.flip()
 
-
             # creating players
             if self.player_1 == "human":
                 self.player_1 = Human(self, 1)
@@ -91,48 +90,65 @@ class Game:
 
             # game loop
             while self.game_status:
-                # changing size of screen to fit chosen board
-                self.screen_width = self.grid_size * (self.board.cell_size + self.board.margin) + self.board.margin
-                self.screen_height = self.grid_size * (self.board.cell_size + self.board.margin) + 50 + self.board.margin
+                self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
 
-                for event in pygame.event.get():
+                while pygame.QUIT not in [event.type for event in pygame.event.get()] \
+                        and not pygame.key.get_pressed()[pygame.K_ESCAPE]:
+                    self.score = self.rules.getScoreOfBoard(self.board.grid)
                     self.pos = pygame.mouse.get_pos()
                     x = self.pos[0]
                     y = self.pos[1]
-                    if x < (self.screen_width - self.board.margin) and 50 < y < (self.screen_height - self.board.margin):
+                    column = 0
+                    row = 0
+                    if x < (self.screen_width - self.board.margin) and 50 < y < (
+                            self.screen_height - self.board.margin):
                         column = x // (self.board.cell_size + self.board.margin)
-                        row = (y-50) // (self.board.cell_size + self.board.margin)
-                    if event.type == pygame.QUIT:
-                        self.game_status = False
-                        self.menu.state = True
-                    elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                        self.game_status = False
-                        self.menu.state = True
-                    # print(self.board.grid)
-                    # print(column, row)
+                        row = (y - 50) // (self.board.cell_size + self.board.margin)
+
                     for x, y in self.rules.get_valid_move(self.board.grid, self.turn):
-                            self.board.grid[y][x] = 3
-                    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.turn == 1 and self.rules.is_valid_move(self.board.grid, 1, column, row):
-                        self.player_1.make_a_move(row, column)
-                        if self.rules.get_valid_move(self.board.grid, 2) == []:
-                            self.turn = 1
-                        else:
-                            self.turn = 2
-                    #if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.turn == 2 and self.rules.is_valid_move(self.board.grid, 2, column, row):
-                    if self.turn == 2 and self.rules.is_valid_move(self.board.grid, 2, column, row):
-                        self.player_2.make_a_move(row, column)
-                        if self.rules.get_valid_move(self.board.grid, 1) == []:
-                            self.turn = 2
-                        else:
-                            self.turn = 1
-                isinstance(self.player_1,Human)
-                #resizing screen to match board size
-                self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
-                # getting a score
-                self.score = self.rules.getScoreOfBoard(self.board.grid)
-                # drawing a board
-                self.board.draw()
-                pygame.display.flip()
+                        self.board.grid[y][x] = 3
+
+                    if isinstance(self.player_1, Human):
+                        if pygame.mouse.get_pressed()[0] == 1 and self.turn == 1 and self.rules.is_valid_move(self.board.grid, 1, column, row):
+                            self.player_1.make_a_move(row, column)
+                            if self.rules.get_valid_move(self.board.grid, 2) == []:
+                                self.turn = 1
+                            else:
+                                self.turn = 2
+
+                    if not isinstance(self.player_1, Human):
+                        if self.turn == 1:
+                            self.player_1.make_a_move(row, column)
+                            if self.rules.get_valid_move(self.board.grid, 2) == []:
+                                self.turn = 1
+                            else:
+                                self.turn = 2
+
+                    if isinstance(self.player_2, Human):
+                        if pygame.mouse.get_pressed()[0] == 1 and self.turn == 2 and self.rules.is_valid_move(self.board.grid, 2, column, row):
+                            self.player_2.make_a_move(row, column)
+                            if self.rules.get_valid_move(self.board.grid, 1) == []:
+                                self.turn = 2
+                            else:
+                                self.turn = 1
+
+                    if not isinstance(self.player_2, Human):
+                        if self.turn == 2:
+                            self.player_2.make_a_move(row, column)
+                            if self.rules.get_valid_move(self.board.grid, 1) == []:
+                                self.turn = 2
+                            else:
+                                self.turn = 1
+
+                    # getting a score
+                    self.score = self.rules.getScoreOfBoard(self.board.grid)
+                    self.board.draw()
+                    pygame.display.flip()
+
+                #after closing single game -> back to menu
+                self.game_status = False
+                self.menu.state = True
+
 
 if __name__ == "__main__":
     Game()

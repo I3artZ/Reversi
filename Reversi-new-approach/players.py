@@ -6,24 +6,10 @@ class Human:
     def __init__(self, game, player):
         self.game = game
         self.player = player
+
     def make_a_move(self, row, column):
-            # black turn
-            # print(self.game.board.grid)
-            # print(self.player)
-            # print(column, row)
             self.game.rules.make_move(self.game.board.grid, self.player, column, row)
             self.game.board.grid[row][column] = self.player
-
-            '''print("Whites:", f.count_points(grid)[1], "Blacks:",
-                            f.count_points(grid)[0],)  # current score
-                    # printing possible moves for white
-                        print("Possible Whites's moves (x,y)", f.getValidMove(grid, 2))
-
-                    # changing a player
-                    if f.getValidMove(grid, 2) == []:
-                        turn = 1
-                    else:
-                        turn = 2'''
 
 
 class MinMax:
@@ -32,7 +18,7 @@ class MinMax:
         self.player = player
         self.minEvalBoard = -1 # min - 1
         self.maxEvalBoard = game.grid_size * game.grid_size + 4 * game.grid_size + 4 + 1 # max + 1
-        self.DEPTHOFSEARCH = 5
+        self.DEPTHOFSEARCH = 10
 
     def Minimax(self,board, player, depth, maximizingPlayer):
         if depth == 0 or self.game.rules.IsTerminalNode(player):
@@ -74,7 +60,9 @@ class MinMax:
                 bestY = y
                 bestX = x
                 bestScore = score
-        self.game.rules.make_move(self.game.board.grid, self.player, bestY, bestX)
+        if possibleMoves:
+            self.game.rules.make_move(self.game.board.grid, self.player, bestY, bestX)
+        pass
 
 
 class MonteCarlo:
