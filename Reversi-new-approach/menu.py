@@ -94,6 +94,7 @@ class Menu:
                 textSurface, textRect = f.text_objects("30 x 30", smallText)
             if rect == self.rect_17:
                 textSurface, textRect = f.text_objects("Play", smallText)
+
             textRect.center = (rect.left + rect.width / 2), (rect.top + rect.height / 2)
             self.game.screen.blit(textSurface, textRect)
 
@@ -127,16 +128,11 @@ class Menu:
                     i.pressed = False
                 rect.pressed = True
 
-        a = [1 for rect in self.rects if rect.pressed]
-        if sum(a) == 3 and self.rect_17.left < self.game.pos[0] < self.rect_17.width + self.rect_17.left:
-            if self.rect_17.top < self.game.pos[1] < self.rect_17.top + self.rect_17.height:
-                self.rect_17.color = yellow
-                self.game.menu.state = False
-                self.game.game_status = True
+        self.play()
 
     def play(self):
-        a = [1 for rect in self.rects if rect.pressed]
-        if sum(a) == 3 and self.rect_17.left < self.game.pos[0] < self.rect_17.width + self.rect_17.left:
+        pressed_keys = [1 for rect in self.rects if rect.pressed]
+        if sum(pressed_keys) == 3 and self.rect_17.left < self.game.pos[0] < self.rect_17.width + self.rect_17.left:
             if self.rect_17.top < self.game.pos[1] < self.rect_17.top + self.rect_17.height:
                 self.game.menu.state = False
                 self.game.game_status = True

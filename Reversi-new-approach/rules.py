@@ -10,6 +10,7 @@ class Rules:
     def is_valid_move(self, grid, tile, x_start, y_start):
         if grid[y_start][x_start] == 1 or grid[y_start][x_start] == 2 or not self.is_on_board(x_start, y_start):
             return False
+
         if tile == 2:
             other_tile = 1
         else:
@@ -70,15 +71,15 @@ class Rules:
     def getScoreOfBoard(self, board):
     # Determine the score by counting the tiles. Returns a dictionary with keys '1' and '2'.
     # We should add our heuristics here
-        xscore = 0
-        oscore = 0
+        whites = 0
+        blacks = 0
         for x in range(self.game.grid_size):
             for y in range(self.game.grid_size):
                 if board[y][x] == 1:
-                    xscore += 1
+                    whites += 1
                 if board[y][x] == 2:
-                    oscore += 1
-        return {1:xscore, 2:oscore}
+                    blacks += 1
+        return {1: whites, 2: blacks}
 
     def IsTerminalNode(self, player):
         possibleMoves = self.get_valid_move(self.game.board.grid, player)

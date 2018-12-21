@@ -64,34 +64,31 @@ class Board:
         font = pygame.font.Font("freesansbold.ttf", 20)
         #print("Black: " + str(black), "White: " + str(white))
 
-        if self.game.turn == 1:
-            scoreboard_b = r.Rectangle(self.game.screen, 0, 0, self.game.screen_width/2, 50, (180, 150, 0))
-            scoreboard_w = r.Rectangle(self.game.screen, self.game.screen_width/2, 0, self.game.screen_width / 2, 50, (50, 50, 50))
-        if self.game.turn == 2:
-            scoreboard_b = r.Rectangle(self.game.screen, 0, 0, self.game.screen_width / 2, 50, (50, 50, 50))
-            scoreboard_w = r.Rectangle(self.game.screen, self.game.screen_width / 2, 0, self.game.screen_width / 2, 50,
-                                       (180, 150, 0))
+        scoreboard_b = r.Rectangle(self.game.screen, 0, 0, self.game.screen_width/2, 50, (180, 150, 0))
+        scoreboard_w = r.Rectangle(self.game.screen, self.game.screen_width / 2, 0,
+                                   self.game.screen_width / 2, 50, (50, 50, 50))
 
-        a = [scoreboard_w, scoreboard_b]
-        scoreboard_b.drawRect()
-        scoreboard_w.drawRect()
+        scoreboards = [scoreboard_w, scoreboard_b]
 
-        for rect in a:
-            if rect == scoreboard_b:
+        for scoreboard in scoreboards:
+            scoreboard.drawRect()
+            if scoreboard == scoreboard_b:
                 textSurface, textRect = f.text_objects("Black: " + str(black), font, (255,255,255))
-                textRect.center = (rect.left + rect.width / 2), (rect.top + rect.height / 2)
+                textRect.center = (scoreboard.left + scoreboard.width / 2), (scoreboard.top + scoreboard.height / 2)
                 self.game.screen.blit(textSurface, textRect)
-            if rect == scoreboard_w:
+            if scoreboard == scoreboard_w:
                 textSurface, textRect = f.text_objects("White: " + str(white), font, (255, 255, 255))
-                textRect.center = (rect.left + rect.width / 2), (rect.top + rect.height / 2)
+                textRect.center = (scoreboard.left + scoreboard.width / 2), (scoreboard.top + scoreboard.height / 2)
                 self.game.screen.blit(textSurface, textRect)
 
     def game_end(self):
         black = self.game.score[1]
         white = self.game.score[2]
-        font = pygame.font.Font("freesansbold.ttf", int(self.game.screen_height*0.1))
-        if self.game.rules.get_valid_move(self.game.board.grid, 1) == [] and self.game.rules.get_valid_move(self.game.board.grid, 2) == []:
-            box = r.Rectangle(self.game.screen, self.game.screen_width*0.1, self.game.screen_height*0.2+25, self.game.screen_width*0.8, (self.game.screen_height)*0.6, (180, 150, 0))
+        font = pygame.font.Font("freesansbold.ttf", int(self.game.screen_height * 0.1))
+        if self.game.rules.get_valid_move(self.game.board.grid, 1) == [] or \
+                self.game.rules.get_valid_move(self.game.board.grid, 2) == []:
+            box = r.Rectangle(self.game.screen, self.game.screen_width*0.1, self.game.screen_height*0.2+25,
+                              self.game.screen_width*0.8, (self.game.screen_height)*0.6, (180, 150, 0))
             box.drawRect()
 
             if black > white:

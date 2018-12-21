@@ -28,10 +28,6 @@ class Game:
         # grid's cell size
         self.grid_size = 0
 
-        # player 1 (black)
-        self.player_1 = ""
-        # player 2 (white)
-        self.player_2 = ""
         # program loop
         while not self.close:
             self.turn = 1
@@ -113,32 +109,28 @@ class Game:
                             self.player_1.make_a_move(row, column)
                             if self.rules.get_valid_move(self.board.grid, 2) == []:
                                 self.turn = 1
-                            else:
-                                self.turn = 2
+                            self.turn = 2
 
                     if not isinstance(self.player_1, Human):
                         if self.turn == 1:
                             self.player_1.make_a_move(row, column)
                             if self.rules.get_valid_move(self.board.grid, 2) == []:
                                 self.turn = 1
-                            else:
-                                self.turn = 2
+                            self.turn = 2
 
                     if isinstance(self.player_2, Human):
                         if pygame.mouse.get_pressed()[0] == 1 and self.turn == 2 and self.rules.is_valid_move(self.board.grid, 2, column, row):
                             self.player_2.make_a_move(row, column)
                             if self.rules.get_valid_move(self.board.grid, 1) == []:
                                 self.turn = 2
-                            else:
-                                self.turn = 1
+                            self.turn = 1
 
                     if not isinstance(self.player_2, Human):
                         if self.turn == 2:
                             self.player_2.make_a_move(row, column)
                             if self.rules.get_valid_move(self.board.grid, 1) == []:
                                 self.turn = 2
-                            else:
-                                self.turn = 1
+                            self.turn = 1
 
                     # getting a score
                     self.score = self.rules.getScoreOfBoard(self.board.grid)
