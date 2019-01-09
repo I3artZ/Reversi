@@ -1,6 +1,7 @@
 import pygame
 import reversi_func as f
 import Rectangle as r
+import os
 
 lines = (0, 0, 0)
 black = (20, 20, 20)
@@ -18,8 +19,8 @@ class Board:
         self.grid_size = self.game.grid_size
         self.grid = [[0 for x in range(self.grid_size)] for y in range(self.grid_size)]
         # starting positions
-        a = int(len(self.grid)/2-1)
-        b = int(len(self.grid)/2)
+        a = int(self.grid_size/2-1)
+        b = int(self.grid_size/2)
 
         self.grid[a][a] = 1
         self.grid[a][b] = 2
@@ -40,6 +41,12 @@ class Board:
         self.game.screen_width = self.grid_size * (self.cell_size + self.margin) + self.margin
         self.game.screen_height = self.grid_size * (
                 self.cell_size + self.margin) + 50 + self.margin
+
+        # centering game window
+        x = (self.game.screen_resolution_w - self.game.screen_width) / 2
+        y = (self.game.screen_resolution_h - self.game.screen_height) / 2 + 10
+        os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x, y)
+
         self.game.screen = pygame.display.set_mode((self.game.screen_width, self.game.screen_height))
 
         for row in range(self.grid_size):
@@ -85,7 +92,7 @@ class Board:
         black = self.game.score[1]
         white = self.game.score[2]
         font = pygame.font.Font("freesansbold.ttf", int(self.game.screen_height * 0.1))
-        if self.game.rules.get_valid_move(self.game.board.grid, 1) == [] or \
+        if self.game.rules.get_valid_move(self.game.board.grid, 1) == [] and \
                 self.game.rules.get_valid_move(self.game.board.grid, 2) == []:
             box = r.Rectangle(self.game.screen, self.game.screen_width*0.1, self.game.screen_height*0.2+25,
                               self.game.screen_width*0.8, (self.game.screen_height)*0.6, (180, 150, 0))

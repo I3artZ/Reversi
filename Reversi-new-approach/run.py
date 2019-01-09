@@ -3,6 +3,7 @@ from menu import Menu
 from board import Board
 from rules import Rules
 from players import Human, MinMax, MonteCarlo
+import os
 
 # some colors
 black = (20, 20, 20)
@@ -13,10 +14,18 @@ red = (0, 0, 255)
 class Game:
 
     def __init__(self):
+
         pygame.init()
+        self.screen_resolution_w = pygame.display.Info().current_w
+        self.screen_resolution_h = pygame.display.Info().current_h
         # set a screen
         self.screen_width = 800
         self.screen_height = 500
+
+        x = (self.screen_resolution_w - self.screen_width)/2
+        y = (self.screen_resolution_h - self.screen_height)/2 + 10
+        os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x, y)
+
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Reversi")
 
@@ -32,10 +41,17 @@ class Game:
         while not self.close:
             self.turn = 1
             self.menu = Menu(self)
+
             while self.menu.state:
                 self.screen_width = 800
                 self.screen_height = 500
+
+                #centering menu window
+                x = (self.screen_resolution_w - self.screen_width) / 2
+                y = (self.screen_resolution_h - self.screen_height) / 2 + 10
+                os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x, y)
                 self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
+
                 # reading position of mouse
                 self.pos = pygame.mouse.get_pos()
                 # close program
@@ -66,31 +82,31 @@ class Game:
                     self.menu.highlight()
                     pygame.display.flip()
 
-            # creating players
-            if self.player_1 == "human":
-                self.player_1 = Human(self, 1)
-            elif self.player_1 == "minmax":
-                self.player_1 = MinMax(self, 1)
-            elif self.player_1 == "monte carlo":
-                self.player_1 = MonteCarlo(self, 1)
-            if self.player_2 == "human":
-                self.player_2 = Human(self, 2)
-            elif self.player_2 == "minmax":
-                    self.player_2 = MinMax(self, 2)
-            elif self.player_2 == "monte carlo":
-                    self.player_2 = MonteCarlo(self, 2)
-
-            # initialize board with chosen size
-            self.board = Board(self)
-            self.rules = Rules(self)
-
             # game loop
             while self.game_status:
                 self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
 
+                # initialize board with chosen size
+                self.board = Board(self)
+                self.rules = Rules(self)
+
+                # creating players
+                if self.player_1 == "human":
+                    self.player_1 = Human(self, 1)
+                elif self.player_1 == "minmax":
+                    self.player_1 = MinMax(self, 1)
+                elif self.player_1 == "monte carlo":
+                    self.player_1 = MonteCarlo(self, 1)
+                if self.player_2 == "human":
+                    self.player_2 = Human(self, 2)
+                elif self.player_2 == "minmax":
+                        self.player_2 = MinMax(self, 2)
+                elif self.player_2 == "monte carlo":
+                        self.player_2 = MonteCarlo(self, 2)
+
                 while pygame.QUIT not in [event.type for event in pygame.event.get()] \
                         and not pygame.key.get_pressed()[pygame.K_ESCAPE]:
-                    self.score = self.rules.getScoreOfBoard(self.board.grid)
+                    self.score = self.rules.points_for_tiles(self.board.grid)
                     self.pos = pygame.mouse.get_pos()
                     x = self.pos[0]
                     y = self.pos[1]
@@ -103,15 +119,17 @@ class Game:
 
                     for x, y in self.rules.get_valid_move(self.board.grid, self.turn):
                         self.board.grid[y][x] = 3
+                    #print(self.rules.points_for_mobility(self.board.grid, self.turn))
 
                     if isinstance(self.player_1, Human):
+                        #print(self.rules.points_for_mobility(self.board.grid, self.turn))
                         if pygame.mouse.get_pressed()[0] == 1 and self.turn == 1 and self.rules.is_valid_move(self.board.grid, 1, column, row):
                             self.player_1.make_a_move(row, column)
                             if self.rules.get_valid_move(self.board.grid, 2) == []:
                                 self.turn = 1
                             self.turn = 2
-
-                    if not isinstance(self.player_1, Human):
+                    else:
+                    # if not isinstance(self.player_1, Human)
                         if self.turn == 1:
                             self.player_1.make_a_move(row, column)
                             if self.rules.get_valid_move(self.board.grid, 2) == []:
@@ -119,13 +137,15 @@ class Game:
                             self.turn = 2
 
                     if isinstance(self.player_2, Human):
+                        #print(self.rules.points_for_mobility(self.board.grid, self.turn))
                         if pygame.mouse.get_pressed()[0] == 1 and self.turn == 2 and self.rules.is_valid_move(self.board.grid, 2, column, row):
                             self.player_2.make_a_move(row, column)
                             if self.rules.get_valid_move(self.board.grid, 1) == []:
                                 self.turn = 2
                             self.turn = 1
-
-                    if not isinstance(self.player_2, Human):
+                    else:
+                    #if not isinstance(self.player_2, Human)
+                        #print(self.rules.points_for_mobility(self.board.grid, self.turn))
                         if self.turn == 2:
                             self.player_2.make_a_move(row, column)
                             if self.rules.get_valid_move(self.board.grid, 1) == []:
@@ -133,14 +153,13 @@ class Game:
                             self.turn = 1
 
                     # getting a score
-                    self.score = self.rules.getScoreOfBoard(self.board.grid)
+                    self.score = self.rules.points_for_tiles(self.board.grid)
                     self.board.draw()
                     pygame.display.flip()
 
                 #after closing single game -> back to menu
                 self.game_status = False
                 self.menu.state = True
-
 
 if __name__ == "__main__":
     Game()

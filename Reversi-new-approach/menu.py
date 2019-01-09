@@ -1,6 +1,7 @@
 import pygame
 import reversi_func as f
 import Rectangle as r
+
 # some colors definitions
 grey = (180, 180, 155)
 white = (255, 255, 255)
@@ -14,6 +15,7 @@ class Menu:
     def __init__(self, game):
         self.game = game
         self.state = True
+
         # players buttons
         self.rect_1 = r.Rectangle(self.game.screen, 50, 120, 160, 70, grey)
         self.rect_2 = r.Rectangle(self.game.screen, 50, 200, 160, 70, grey)
@@ -35,13 +37,14 @@ class Menu:
         # ok button
         self.rect_17 = r.Rectangle(self.game.screen, 660, 200, 90, 150, grey)
         self.rects = [self.rect_1, self.rect_2, self.rect_3, self.rect_4, self.rect_5, self.rect_6, self.rect_7,
-                      self.rect_8, self.rect_9 ,self.rect_10, self.rect_11, self.rect_12, self.rect_13, self.rect_14,
+                      self.rect_8, self.rect_9, self.rect_10, self.rect_11, self.rect_12, self.rect_13, self.rect_14,
                       self.rect_15, self.rect_16, self.rect_17]
         self.player_1 = self.rects[0:4]
         self.player_2 = self.rects[4:8]
         self.board_size = self.rects[8:16]
 
     def draw(self):
+
         title_font = pygame.font.SysFont("freesansbold.ttf", 45)
         smallText = pygame.font.Font("freesansbold.ttf", 20)
 

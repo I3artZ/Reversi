@@ -1,5 +1,9 @@
+import copy
+
+
 # game rules
 class Rules:
+
     def __init__(self, game):
         self.game = game
 
@@ -71,19 +75,94 @@ class Rules:
     def getScoreOfBoard(self, board):
     # Determine the score by counting the tiles. Returns a dictionary with keys '1' and '2'.
     # We should add our heuristics here
+
+        heuristics = [self.points_for_tiles(board), self.points_for_position(board)]
+                     #self.points_for_stability(board)]
+        whites = (0.5 * heuristics[0][1] + 0.5 * heuristics[1][1])
+        blacks = (0.5 * heuristics[0][2] + 0.5 * heuristics[1][2])
+
+        return {1: whites, 2: blacks}
+
+    def IsTerminalNode(self, player):
+        possible_moves = self.get_valid_move(self.game.board.grid, player)
+        if possible_moves.__len__ == 0:
+            return False
+        return True
+
+    def points_for_tiles(self, board):
         whites = 0
         blacks = 0
-        for x in range(self.game.grid_size):
-            for y in range(self.game.grid_size):
+        grid_size = self.game.grid_size
+
+        for x in range(grid_size):
+            for y in range(grid_size):
                 if board[y][x] == 1:
                     whites += 1
                 if board[y][x] == 2:
                     blacks += 1
         return {1: whites, 2: blacks}
 
-    def IsTerminalNode(self, player):
-        possibleMoves = self.get_valid_move(self.game.board.grid, player)
-        if possibleMoves.__len__ == 0:
-            return False
-        return True
+    def points_for_position(self, board):
+        whites = 0
+        blacks = 0
+        grid_size = self.game.grid_size
+        grid_points = [[0 for x in range(grid_size)] for y in range(grid_size)]
 
+        for x in range(grid_size):
+            for y in range(grid_size):
+                # a / corners +10
+                if (x == 0 and y == grid_size - 1) or (x == grid_size - 1 and y == 0) or (y == 0 and x == 0) or (
+                        y == grid_size - 1 and x == grid_size - 1):
+                    grid_points[y][x] = 10
+
+                # b corners neighbors -5
+                if (x == 1 and y == grid_size - 1) or (x == 1 and y == 0) or \
+                        (x == grid_size - 2 and y == 0) or (x == grid_size - 2 and y == grid_size - 1) or \
+                        (y == 1 and x == grid_size - 1) or (y == 1 and x == 0) or \
+                        (y == grid_size - 2 and x == 0) or (y == grid_size - 2 and x == grid_size - 1):
+                    grid_points[y][x] = -5
+
+                # c / worst place -8
+                if (x == 1 and y == grid_size - 2) or (x == grid_size - 2 and y == 1) or (y == 1 and x == 1) or (
+                        y == grid_size - 2 and x == grid_size - 2):
+                    grid_points[y][x] = -8
+
+                # d +3
+                if (x == 0 and 1 < y < grid_size - 2) or (x == grid_size - 1 and 1 < y < grid_size - 2) or (
+                        y == 0 and 1 < x < grid_size - 2) or (y == grid_size - 1 and 1 < x < grid_size - 2):
+                    grid_points[y][x] = 3
+                # e -3
+                if (x == 1 and 1 < y < grid_size - 2) or (x == grid_size - 2 and 1 < y < grid_size - 2) or (
+                        y == 1 and 1 < x < grid_size - 2) or (y == grid_size - 2 and 1 < x < grid_size - 2):
+                    grid_points[y][x] = -3
+
+        for x in range(grid_size):
+            for y in range(grid_size):
+                if board[y][x] == 1:
+                    whites += grid_points[y][x]
+                if board[y][x] == 2:
+                    blacks += grid_points[y][x]
+
+        return {1: whites, 2: blacks}
+
+
+    def points_for_mobility(self, board, turn):
+        scores = {}
+        grid = copy.deepcopy(board)
+        for x, y in self.get_valid_move(grid, turn):
+            if turn == 1:
+                self.make_move(grid, turn, x, y)
+                scores[(x, y)] = len(self.get_valid_move(grid, 2))
+                grid = copy.deepcopy(board)
+            elif turn == 2:
+                self.make_move(grid, turn, x, y)
+                scores[(x, y)] = len(self.get_valid_move(grid, 1))
+                grid = copy.deepcopy(board)
+
+        return scores
+
+    def points_for_stability(self, board):
+        pass
+
+    def get_game_state(self, game):
+        pass
