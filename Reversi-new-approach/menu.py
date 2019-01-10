@@ -104,7 +104,8 @@ class Menu:
     def highlight(self):
         # make it brighter!
         for rect in self.rects:
-            if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + rect.height:
+            if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + \
+                    rect.height:
                 rect.color = l_grey
             elif rect.pressed:
                 rect.color = yellow
@@ -114,19 +115,22 @@ class Menu:
     def press_button(self):
 
         for rect in self.player_1:
-            if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + rect.height:
+            if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + \
+                    rect.height:
                 for i in self.player_1:
                     i.pressed = False
                 rect.pressed = True
 
         for rect in self.player_2:
-            if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + rect.height:
+            if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + \
+                    rect.height:
                 for i in self.player_2:
                     i.pressed = False
                 rect.pressed = True
 
         for rect in self.board_size:
-            if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + rect.height:
+            if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + \
+                    rect.height:
                 for i in self.board_size:
                     i.pressed = False
                 rect.pressed = True

@@ -18,24 +18,54 @@ class MinMax:
     def __init__(self, game, player):
         self.game = game
         self.player = player
-        self.min_eval_board = -1 # min - 1
-        self.max_eval_board = game.grid_size * game.grid_size + 4 * game.grid_size + 4 + 1  # max + 1
-        self.depth_of_search = 5
+        self.min_eval_board = 0
+        self.max_eval_board = 1
+        self.depth_of_search = 2
 
     def Minimax(self, board, player, depth, maximizing_player):
-        if depth == 0 or self.game.rules.IsTerminalNode(player):
+        if depth == 0 or not self.game.rules.IsTerminalNode(player):
             return self.game.rules.getScoreOfBoard(board)[player]
         possible_moves = self.game.rules.get_valid_move(board, player)
         # randomize the order of the possible moves
-        #random.shuffle(possible_moves)
+        random.shuffle(possible_moves)
+        if maximizing_player:
+            best_value = self.max_eval_board
+            for y, x in possible_moves:
+                #dupe_board = self.game.board.grid.copy()
+                dupe_board = copy.deepcopy(board)
+                #print(dupe_board)
+                points_for_mobility = self.game.rules.points_for_mobility(dupe_board, self.game.turn)[y, x]
+                self.game.rules.make_move(dupe_board, player, y, x)
+                v = self.Minimax(dupe_board, player, depth - 1, False) - 0.1 * points_for_mobility
+                best_value = max(best_value, v)
+                #print(best_value)
+        else:  # minimizingPlayer
+            best_value = self.min_eval_board
+            for y, x in possible_moves:
+                #  dupe_board = self.game.board.grid.copy()
+                dupe_board = copy.deepcopy(board)
+                #print(dupe_board)
+                points_for_mobility = self.game.rules.points_for_mobility(dupe_board, self.game.turn)[y, x]
+                self.game.rules.make_move(dupe_board, player, y, x)
+                v = self.Minimax(dupe_board, player, depth - 1, True) - 0.33 * points_for_mobility
+                best_value = min(best_value, v)
+                #print(best_value)
+        return best_value
+
+        '''if depth == 0 or self.game.rules.IsTerminalNode(player):
+            return self.game.rules.getScoreOfBoard(board)[player]
+        possible_moves = self.game.rules.get_valid_move(board, player)
+        # randomize the order of the possible moves
+        # random.shuffle(possible_moves)
         if maximizing_player:
             best_value = self.min_eval_board
             for y, x in possible_moves:
-                #dupe_board = self.game.board.grid.copy()
+                # dupe_board = self.game.board.grid.copy()
                 dupe_board = copy.deepcopy(self.game.board.grid)
-                self.game.rules.make_move(dupe_board, player, y, x)
+                self.game.rules.mak
+                e_move(dupe_board, player, y, x)
                 v = self.Minimax(dupe_board, player, depth - 1, False) - 0.1 * (
-                         self.game.rules.points_for_mobility(dupe_board, self.game.turn)[y, x])
+                    self.game.rules.points_for_mobility(dupe_board, self.game.turn)[y, x])
                 best_value = max(best_value, v)
         else:  # minimizingPlayer
             best_value = self.max_eval_board
@@ -44,11 +74,13 @@ class MinMax:
                 dupe_board = copy.deepcopy(self.game.board.grid)
                 self.game.rules.make_move(dupe_board, player, y, x)
                 v = self.Minimax(dupe_board, player, depth - 1, True) - 0.1 * (
-                         self.game.rules.points_for_mobility(dupe_board, self.game.turn)[y, x])
+                    self.game.rules.points_for_mobility(dupe_board, self.game.turn)[y, x])
                 best_value = min(best_value, v)
-        return best_value
+        return best_value'''
+
 
     def make_a_move(self, *args):
+        # called from game
         possible_moves = self.game.rules.get_valid_move(self.game.board.grid, self.player)
         # randomize the order of the possible moves
         random.shuffle(possible_moves)
@@ -60,18 +92,21 @@ class MinMax:
             best_x = possible_moves[0][1]
             #  check for better move
             for y, x in possible_moves:
-                #print(y, x)
+                #print("current:", y, x)
                 #print(possible_moves)
                 dupe_board = copy.deepcopy(self.game.board.grid)
-                print(self.game.rules.points_for_mobility(dupe_board, 2))
-                score = self.Minimax(dupe_board, self.player, self.depth_of_search, True) - 0.1 * (
-                         self.game.rules.points_for_mobility(dupe_board, self.game.turn)[y, x])
+                #print(self.game.rules.points_for_mobility(dupe_board, 2))
+                #score = self.Minimax(dupe_board, self.player, self.depth_of_search, True) - 0.1 * (self.game.rules.points_for_mobility(dupe_board, self.game.turn)[y, x])
+                points_for_mobility = self.game.rules.points_for_mobility(dupe_board, self.game.turn)[y, x]
                 self.game.rules.make_move(dupe_board, self.player, y, x)
-                print(score)
+                score = self.Minimax(dupe_board, self.player, self.depth_of_search, True) - 0.1 * points_for_mobility
+                #print(score)
                 if score > best_score:
                     best_y = y
                     best_x = x
                     best_score = score
+                #print("best score", best_score)
+                #print("best move", best_y, best_x)
             self.game.rules.make_move(self.game.board.grid, self.player, best_y, best_x)
             return best_y, best_x
         pass

@@ -1,4 +1,5 @@
 import copy
+import pygame
 
 
 # game rules
@@ -78,8 +79,8 @@ class Rules:
 
         heuristics = [self.points_for_tiles(board), self.points_for_position(board)]
                      #self.points_for_stability(board)]
-        whites = (0.5 * heuristics[0][1] + 0.5 * heuristics[1][1])
-        blacks = (0.5 * heuristics[0][2] + 0.5 * heuristics[1][2])
+        whites = (0.33 * heuristics[0][1] + 0.33 * heuristics[1][1])
+        blacks = (0.33 * heuristics[0][2] + 0.33 * heuristics[1][2])
 
         return {1: whites, 2: blacks}
 
@@ -110,31 +111,31 @@ class Rules:
 
         for x in range(grid_size):
             for y in range(grid_size):
-                # a / corners +10
+                # a / corners +3
                 if (x == 0 and y == grid_size - 1) or (x == grid_size - 1 and y == 0) or (y == 0 and x == 0) or (
                         y == grid_size - 1 and x == grid_size - 1):
-                    grid_points[y][x] = 10
+                    grid_points[y][x] = 3
 
-                # b corners neighbors -5
+                # b corners neighbors -1
                 if (x == 1 and y == grid_size - 1) or (x == 1 and y == 0) or \
                         (x == grid_size - 2 and y == 0) or (x == grid_size - 2 and y == grid_size - 1) or \
                         (y == 1 and x == grid_size - 1) or (y == 1 and x == 0) or \
                         (y == grid_size - 2 and x == 0) or (y == grid_size - 2 and x == grid_size - 1):
-                    grid_points[y][x] = -5
+                    grid_points[y][x] = -2
 
-                # c / worst place -8
+                # c / worst place -3
                 if (x == 1 and y == grid_size - 2) or (x == grid_size - 2 and y == 1) or (y == 1 and x == 1) or (
                         y == grid_size - 2 and x == grid_size - 2):
-                    grid_points[y][x] = -8
+                    grid_points[y][x] = -3
 
-                # d +3
+                # d +1
                 if (x == 0 and 1 < y < grid_size - 2) or (x == grid_size - 1 and 1 < y < grid_size - 2) or (
                         y == 0 and 1 < x < grid_size - 2) or (y == grid_size - 1 and 1 < x < grid_size - 2):
-                    grid_points[y][x] = 3
-                # e -3
+                    grid_points[y][x] = 1
+                # e -1
                 if (x == 1 and 1 < y < grid_size - 2) or (x == grid_size - 2 and 1 < y < grid_size - 2) or (
                         y == 1 and 1 < x < grid_size - 2) or (y == grid_size - 2 and 1 < x < grid_size - 2):
-                    grid_points[y][x] = -3
+                    grid_points[y][x] = -1
 
         for x in range(grid_size):
             for y in range(grid_size):
@@ -166,3 +167,13 @@ class Rules:
 
     def get_game_state(self, game):
         pass
+
+    '''def get_hints(self, board, turn):
+        for x, y in self.game.rules.get_valid_move(board.grid, turn):
+            board.grid[y][x] = 3
+
+            pygame.draw.rect(self.game.screen, (200, 150, 100), [board.margin + (board.margin + board.cell_size) * y,
+                                                                 board.margin + 50 + (board.margin + board.cell_size)
+                                                                 * x, board.cell_size, board.cell_size])'''
+
+

@@ -121,41 +121,38 @@ class Game:
                         self.board.grid[y][x] = 3
                     #print(self.rules.points_for_mobility(self.board.grid, self.turn))
 
-                    if isinstance(self.player_1, Human):
-                        #print(self.rules.points_for_mobility(self.board.grid, self.turn))
-                        if pygame.mouse.get_pressed()[0] == 1 and self.turn == 1 and self.rules.is_valid_move(self.board.grid, 1, column, row):
+                    if self.turn == 1:
+                        if isinstance(self.player_1, Human):
+                            #print(self.rules.points_for_mobility(self.board.grid, self.turn))
+                            if pygame.mouse.get_pressed()[0] == 1 and self.rules.is_valid_move(self.board.grid, 1, column, row):
+                                self.player_1.make_a_move(row, column)
+                                if self.rules.get_valid_move(self.board.grid, 2):
+                                    self.turn = 2
+                        else:
                             self.player_1.make_a_move(row, column)
-                            if self.rules.get_valid_move(self.board.grid, 2) == []:
-                                self.turn = 1
-                            self.turn = 2
-                    else:
-                    # if not isinstance(self.player_1, Human)
-                        if self.turn == 1:
-                            self.player_1.make_a_move(row, column)
-                            if self.rules.get_valid_move(self.board.grid, 2) == []:
-                                self.turn = 1
-                            self.turn = 2
-
-                    if isinstance(self.player_2, Human):
-                        #print(self.rules.points_for_mobility(self.board.grid, self.turn))
-                        if pygame.mouse.get_pressed()[0] == 1 and self.turn == 2 and self.rules.is_valid_move(self.board.grid, 2, column, row):
-                            self.player_2.make_a_move(row, column)
-                            if self.rules.get_valid_move(self.board.grid, 1) == []:
+                            if self.rules.get_valid_move(self.board.grid, 2):
                                 self.turn = 2
-                            self.turn = 1
-                    else:
-                    #if not isinstance(self.player_2, Human)
-                        #print(self.rules.points_for_mobility(self.board.grid, self.turn))
-                        if self.turn == 2:
-                            self.player_2.make_a_move(row, column)
-                            if self.rules.get_valid_move(self.board.grid, 1) == []:
-                                self.turn = 2
-                            self.turn = 1
 
-                    # getting a score
-                    self.score = self.rules.points_for_tiles(self.board.grid)
-                    self.board.draw()
-                    pygame.display.flip()
+                        self.score = self.rules.points_for_tiles(self.board.grid)
+                        self.board.draw()
+                        pygame.display.update()
+
+                    if self.turn == 2:
+                        if isinstance(self.player_2, Human):
+                            #print(self.rules.points_for_mobility(self.board.grid, self.turn))
+                            if pygame.mouse.get_pressed()[0] == 1 and self.rules.is_valid_move(self.board.grid, 2, column, row):
+                                self.player_2.make_a_move(row, column)
+                                if self.rules.get_valid_move(self.board.grid, 1):
+                                    self.turn = 1
+                        else:
+                            self.player_2.make_a_move(row, column)
+                            if self.rules.get_valid_move(self.board.grid, 1):
+                                self.turn = 1
+
+                        self.score = self.rules.points_for_tiles(self.board.grid)
+                        self.board.draw()
+                        pygame.display.update()
+                    #pygame.display.flip()
 
                 #after closing single game -> back to menu
                 self.game_status = False

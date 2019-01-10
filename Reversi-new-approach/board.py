@@ -8,7 +8,8 @@ black = (20, 20, 20)
 white = (255, 255, 255)
 green = (0, 170, 50)
 peach = (200, 150, 100)
-
+active = (190, 180, 25)
+d_grey = (50, 50, 50)
 
 class Board:
 
@@ -71,16 +72,16 @@ class Board:
         font = pygame.font.Font("freesansbold.ttf", 20)
         #print("Black: " + str(black), "White: " + str(white))
 
-        scoreboard_b = r.Rectangle(self.game.screen, 0, 0, self.game.screen_width/2, 50, (180, 150, 0))
+        scoreboard_b = r.Rectangle(self.game.screen, 0, 0, self.game.screen_width/2, 50, d_grey)
         scoreboard_w = r.Rectangle(self.game.screen, self.game.screen_width / 2, 0,
-                                   self.game.screen_width / 2, 50, (50, 50, 50))
+                                   self.game.screen_width / 2, 50, d_grey)
 
         scoreboards = [scoreboard_w, scoreboard_b]
 
         for scoreboard in scoreboards:
             scoreboard.drawRect()
             if scoreboard == scoreboard_b:
-                textSurface, textRect = f.text_objects("Black: " + str(black), font, (255,255,255))
+                textSurface, textRect = f.text_objects("Black: " + str(black), font, (255, 255, 255))
                 textRect.center = (scoreboard.left + scoreboard.width / 2), (scoreboard.top + scoreboard.height / 2)
                 self.game.screen.blit(textSurface, textRect)
             if scoreboard == scoreboard_w:
@@ -88,14 +89,20 @@ class Board:
                 textRect.center = (scoreboard.left + scoreboard.width / 2), (scoreboard.top + scoreboard.height / 2)
                 self.game.screen.blit(textSurface, textRect)
 
+        if self.game.turn == 1:
+            r.Rectangle(self.game.screen, 10, 40, self.game.screen_width/2 - 20, 5, active).drawRect()
+        else:
+            r.Rectangle(self.game.screen, self.game.screen_width / 2 + 10, 40,
+                        self.game.screen_width / 2 - 20, 5, active).drawRect()
+
     def game_end(self):
         black = self.game.score[1]
         white = self.game.score[2]
         font = pygame.font.Font("freesansbold.ttf", int(self.game.screen_height * 0.1))
         if self.game.rules.get_valid_move(self.game.board.grid, 1) == [] and \
                 self.game.rules.get_valid_move(self.game.board.grid, 2) == []:
-            box = r.Rectangle(self.game.screen, self.game.screen_width*0.1, self.game.screen_height*0.2+25,
-                              self.game.screen_width*0.8, (self.game.screen_height)*0.6, (180, 150, 0))
+            box = r.Rectangle(self.game.screen, self.game.screen_width * 0.1, self.game.screen_height * 0.2 + 25,
+                              self.game.screen_width*0.8, self.game.screen_height * 0.6, (180, 150, 0))
             box.drawRect()
 
             if black > white:
