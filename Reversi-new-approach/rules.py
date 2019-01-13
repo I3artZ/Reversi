@@ -2,12 +2,12 @@ import copy
 
 
 class Rules:
-    # game rules
+    """game rules"""
     def __init__(self, game):
         self.game = game
 
     def is_on_board(self, x, y):
-        # Returns True if the coordinates are located on the board.
+        """ Returns True if the coordinates are located on the board. """
         return 0 <= x <= (self.game.grid_size-1) and 0 <= y <= (self.game.grid_size-1)
 
     def is_valid_move(self, grid, tile, x_start, y_start):
@@ -53,7 +53,7 @@ class Rules:
         return tiles_to_flip
 
     def get_valid_move(self, grid, tile):
-        # Returns a list of [x,y] lists of valid moves for the given player on the given board.
+        """ Returns a list of [x,y] lists of valid moves for the given player on the given board. """
         valid_moves = []
         for x in range(self.game.grid_size):
             for y in range(self.game.grid_size):
@@ -62,8 +62,8 @@ class Rules:
         return valid_moves
 
     def make_move(self, grid, tile, x_start, y_start):
-        # Place the tile on the board at x start, y start, and flip any of the opponent's pieces.
-        # Returns False if this is an invalid move, True if it is valid.
+        """ Place the tile on the board at x start, y start, and flip any of the opponent's pieces.
+        Returns False if this is an invalid move, True if it is valid. """
         tiles_to_flip = self.is_valid_move(grid, tile, x_start, y_start)
         if not tiles_to_flip:
             return False
@@ -90,7 +90,7 @@ class Rules:
         return False
 
     def points_for_tiles(self, board):
-        # return dict with keys 1(whites) and 2(blacks) with amount of gathered tiles in the current state of game
+        """return dict with keys 1(whites) and 2(blacks) with amount of gathered tiles in the current state of game"""
         whites = 0
         blacks = 0
         grid_size = self.game.grid_size
@@ -164,7 +164,6 @@ class Rules:
                 self.make_move(grid, player, x, y)
                 scores[(x, y)] = (100-len(self.get_valid_move(grid, 1)))/100
                 grid = copy.deepcopy(board)
-        #print(scores)
         return scores
 
     def points_for_stability(self, board):

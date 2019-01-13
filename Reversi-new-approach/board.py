@@ -1,7 +1,6 @@
 import pygame
 import reversi_func as f
 import Rectangle as r
-import os
 
 lines = (0, 0, 0)
 black = (20, 20, 20)
@@ -45,11 +44,7 @@ class Board:
                 self.cell_size + self.margin) + 50 + self.margin
 
         # centering game window
-        x = (self.game.screen_resolution_w - self.game.screen_width) / 2
-        y = (self.game.screen_resolution_h - self.game.screen_height) / 2 + 10
-        os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x, y)
-
-        self.game.screen = pygame.display.set_mode((self.game.screen_width, self.game.screen_height))
+        f.center_window(self.game)
 
         for row in range(self.grid_size):
             for column in range(self.grid_size):
@@ -71,7 +66,6 @@ class Board:
         black = self.game.score[1]
         white = self.game.score[2]
         font = pygame.font.Font("freesansbold.ttf", 20)
-        #print("Black: " + str(black), "White: " + str(white))
 
         scoreboard_b = r.Rectangle(self.game.screen, 0, 0, self.game.screen_width/2, 50, d_grey)
         scoreboard_w = r.Rectangle(self.game.screen, self.game.screen_width / 2, 0,
@@ -107,10 +101,12 @@ class Board:
             box.draw_rect()
 
             if black > white:
-                winner = "Black"
+                winner = "Black wins!"
+            elif black < white:
+                winner = "White wins!"
             else:
-                winner = "White"
+                winner = "It's a draw!"
 
-            textSurface, textRect = f.text_objects(winner + " wins!", font, (255, 255, 255))
-            textRect.center = (box.left + box.width / 2), (box.top + box.height / 2)
-            self.game.screen.blit(textSurface, textRect)
+            text_surface, text_rect = f.text_objects(winner, font, (255, 255, 255))
+            text_rect.center = (box.left + box.width / 2), (box.top + box.height / 2)
+            self.game.screen.blit(text_surface, text_rect)

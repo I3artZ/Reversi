@@ -1,6 +1,7 @@
 import pygame
 import reversi_func as f
 import Rectangle as r
+import pyautogui
 
 # some colors definitions
 grey = (180, 180, 155)
@@ -16,6 +17,8 @@ class Menu:
         self.game = game
         self.state = True
         screen = self.game.screen
+        self.player_1_depth_of_search, self.player_2_depth_of_search = 3, 3
+        self.player_1_iter_max, self.player_2_iter_max = 1000, 1000
 
         # players buttons
         # 1st player
@@ -51,23 +54,30 @@ class Menu:
         # play button
         self.rect_17 = r.Rectangle(screen, 660, 200, 90, 150, grey)
         self.rects = [getattr(self, "rect_" + str(i)) for i in range(1, 18)]
-        """self.rects = [self.rect_1, self.rect_2, self.rect_3, self.rect_4, self.rect_5, self.rect_6, self.rect_7,
-                      self.rect_8, self.rect_9, self.rect_10, self.rect_11, self.rect_12, self.rect_13, self.rect_14,
-                      self.rect_15, self.rect_16, self.rect_17]"""
-        self.player_1 = self.rects[0:4]
-        self.player_2 = self.rects[4:8]
+
+        self.player_1 = self.rects[:3]  # in progress button excluded
+        self.player_2 = self.rects[4:7]  # in progress button excluded
         self.board_size = self.rects[8:16]
 
     def draw(self):
         # draw menu buttons and assign properties to them
         # settings fonts
         title_font = pygame.font.SysFont("freesansbold.ttf", 45, True)
+        subtitle_font = pygame.font.SysFont("freesansbold.ttf", 35, True)
         small_text = pygame.font.Font("freesansbold.ttf", 20)
+        little_text = pygame.font.Font("freesansbold.ttf", 15)
         # rendering welcoming msg
         menu_title = title_font.render("Welcome to a game of Othello!", False, white)
-        menu_subtitle = small_text.render("Choose your settings", False, black)
-        self.game.screen.blit(menu_title, (150, 40))
-        self.game.screen.blit(menu_subtitle, (300, 85))
+        menu_subtitle = subtitle_font.render("Choose your settings", False, black)
+        column_name_1 = little_text.render("Player_1", False, black)
+        column_name_2 = little_text.render("Player_2", False, white)
+        column_name_3 = little_text.render("Board size", False, black)
+
+        self.game.screen.blit(menu_title, (140, 20))
+        self.game.screen.blit(menu_subtitle, (270, 55))
+        self.game.screen.blit(column_name_1, (105, 95))
+        self.game.screen.blit(column_name_2, (285, 95))
+        self.game.screen.blit(column_name_3, (490, 95))
 
         for i in range(1, 18):
             rect = getattr(self, "rect_" + str(i))
@@ -76,11 +86,12 @@ class Menu:
             if i == 1 or i == 5:
                 rect.player_type = 'Human'
             if i == 2 or i == 6:
-                rect.player_type = 'Minmax'
+                rect.player_type = 'MinMax'
             if i == 3 or i == 7:
-                rect.player_type = 'Monte Carlo'
+                rect.player_type = 'MonteCarlo'
             if i == 4 or i == 8:
-                rect.player_type = 'In progess'
+                rect.player_type = 'In progress...'
+
             text_surface, text_rect = f.text_objects(rect.player_type, small_text)
 
             if i > 8:
@@ -111,6 +122,17 @@ class Menu:
                 for i in self.player_1:
                     i.pressed = False
                 rect.pressed = True
+                """if rect.player_type == "MinMax":
+                    input_value = pyautogui.prompt("BLACK player - chose depth (default=3): ",
+                                                   "1st player | MinMax depth")
+
+                    self.player_1_depth_of_search = input_value
+
+                if rect.player_type == "MonteCarlo":
+                    input_value = pyautogui.prompt(
+                        "BLACK player - chose maximum number of iterations(default=1000): ",
+                        "1st player | Monte Carlo max iterations")
+                    self.player_1_iter_max = int(input_value)"""
 
         for rect in self.player_2:
             if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + \
@@ -118,6 +140,16 @@ class Menu:
                 for i in self.player_2:
                     i.pressed = False
                 rect.pressed = True
+                """if rect.player_type == "MinMax":
+                    input_value = pyautogui.prompt("WHITE player - chose depth (default=3): ",
+                                                   "2nd player | MinMax depth")
+                    self.player_2_depth_of_search = input_value
+
+                if rect.player_type == "MonteCarlo":
+                    input_value = pyautogui.prompt(
+                        "WHITE player - chose maximum number of iterations(default=1000) for 2nd player: ",
+                        "2nd player | Monte Carlo max iterations")
+                    self.player_2_iter_max = input_value"""
 
         for rect in self.board_size:
             if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + \
