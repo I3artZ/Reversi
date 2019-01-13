@@ -14,7 +14,6 @@ red = (0, 0, 255)
 class Game:
 
     def __init__(self):
-
         pygame.init()
         self.screen_resolution_w = pygame.display.Info().current_w
         self.screen_resolution_h = pygame.display.Info().current_h
@@ -91,17 +90,17 @@ class Game:
                 self.rules = Rules(self)
 
                 # creating players
-                if self.player_1 == "human":
+                if self.player_1 == "Human":
                     self.player_1 = Human(self, 1)
-                elif self.player_1 == "minmax":
+                elif self.player_1 == "Minmax":
                     self.player_1 = MinMax(self, 1)
-                elif self.player_1 == "monte carlo":
+                elif self.player_1 == "Monte Carlo":
                     self.player_1 = MonteCarlo(self, 1)
-                if self.player_2 == "human":
+                if self.player_2 == "Human":
                     self.player_2 = Human(self, 2)
-                elif self.player_2 == "minmax":
+                elif self.player_2 == "Minmax":
                         self.player_2 = MinMax(self, 2)
-                elif self.player_2 == "monte carlo":
+                elif self.player_2 == "Monte Carlo":
                         self.player_2 = MonteCarlo(self, 2)
 
                 while pygame.QUIT not in [event.type for event in pygame.event.get()] \

@@ -65,40 +65,40 @@ while not close:
             
             #making buttons
             rect_1 = r(screen, 50, 120, 345, 70, GREY)
-            rect_1.drawRect()
+            rect_1.draw_rect()
             rect_2 = r(screen, 50, 200, 345, 70, GREY)
-            rect_2.drawRect()
+            rect_2.draw_rect()
             rect_3 = r(screen, 50, 280, 345, 70, GREY)
-            rect_3.drawRect()
+            rect_3.draw_rect()
             rect_4 = r(screen, 50, 360, 345, 70, GREY)
-            rect_4.drawRect()
+            rect_4.draw_rect()
             
             #make it brighter!
             if  50 < pos[0] < 395: 
                 if  120 < pos[1] < 190:
                     rect_1.color = DGREY
-                    rect_1.drawRect()
+                    rect_1.draw_rect()
                 else:
                     rect_1.color = GREY
-                    rect_1.drawRect()
+                    rect_1.draw_rect()
                 if 200 < pos[1] < 270:
                     rect_2.color = DGREY
-                    rect_2.drawRect()
+                    rect_2.draw_rect()
                 else:
                     rect_2.color = GREY
-                    rect_2.drawRect()
+                    rect_2.draw_rect()
                 if 280 < pos[1] < 350:
                     rect_3.color = DGREY
-                    rect_3.drawRect()
+                    rect_3.draw_rect()
                 else:
                     rect_3.color = GREY
-                    rect_3.drawRect()
+                    rect_3.draw_rect()
                 if 360 < pos[1] < 430:
                     rect_4.color = DGREY
-                    rect_4.drawRect()
+                    rect_4.draw_rect()
                 else:
                     rect_4.color = GREY
-                    rect_4.drawRect()
+                    rect_4.draw_rect()
 
             smallText = pygame.font.Font("freesansbold.ttf", 20)
 
@@ -179,7 +179,7 @@ while not close:
 
     if f.getValidMove(grid, 1) == [] and f.getValidMove(grid, 2) == []:
         rect_5 = r(screen, 30, 30, 385, 385, GREY)
-        rect_5.drawRect()
+        rect_5.draw_rect()
         if f.count_points(grid)[1] >= f.count_points(grid)[0]:
             txt = "White wins!" 
             txt_2 =  "Whites: " + str(f.count_points(grid)[1]) + "Blacks: " + str(f.count_points(grid)[0])

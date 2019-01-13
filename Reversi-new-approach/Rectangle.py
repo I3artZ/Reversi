@@ -1,6 +1,7 @@
 import pygame
 
-class Rectangle():
+
+class Rectangle:
     def __init__(self, screen, left, top, width, height, color, pressed=False, player_type=None):
         self.left = left
         self.screen = screen
@@ -12,6 +13,6 @@ class Rectangle():
         self.player_type = player_type
         self.size = None
 
-    def drawRect(self):
+    def draw_rect(self):
         pygame.draw.rect(self.screen, self.color, (self.left, self.top, self.width, self.height))
 

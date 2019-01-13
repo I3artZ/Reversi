@@ -11,6 +11,7 @@ peach = (200, 150, 100)
 active = (190, 180, 25)
 d_grey = (50, 50, 50)
 
+
 class Board:
 
     def __init__(self, game):
@@ -79,21 +80,21 @@ class Board:
         scoreboards = [scoreboard_w, scoreboard_b]
 
         for scoreboard in scoreboards:
-            scoreboard.drawRect()
+            scoreboard.draw_rect()
             if scoreboard == scoreboard_b:
-                textSurface, textRect = f.text_objects("Black: " + str(black), font, (255, 255, 255))
-                textRect.center = (scoreboard.left + scoreboard.width / 2), (scoreboard.top + scoreboard.height / 2)
-                self.game.screen.blit(textSurface, textRect)
+                text_surface, text_rect = f.text_objects("Black: " + str(black), font, (255, 255, 255))
+                text_rect.center = (scoreboard.left + scoreboard.width / 2), (scoreboard.top + scoreboard.height / 2)
+                self.game.screen.blit(text_surface, text_rect)
             if scoreboard == scoreboard_w:
-                textSurface, textRect = f.text_objects("White: " + str(white), font, (255, 255, 255))
-                textRect.center = (scoreboard.left + scoreboard.width / 2), (scoreboard.top + scoreboard.height / 2)
-                self.game.screen.blit(textSurface, textRect)
+                text_surface, text_rect = f.text_objects("White: " + str(white), font, (255, 255, 255))
+                text_rect.center = (scoreboard.left + scoreboard.width / 2), (scoreboard.top + scoreboard.height / 2)
+                self.game.screen.blit(text_surface, text_rect)
 
         if self.game.turn == 1:
-            r.Rectangle(self.game.screen, 10, 40, self.game.screen_width/2 - 20, 5, active).drawRect()
+            r.Rectangle(self.game.screen, 10, 40, self.game.screen_width/2 - 20, 5, active).draw_rect()
         else:
             r.Rectangle(self.game.screen, self.game.screen_width / 2 + 10, 40,
-                        self.game.screen_width / 2 - 20, 5, active).drawRect()
+                        self.game.screen_width / 2 - 20, 5, active).draw_rect()
 
     def game_end(self):
         black = self.game.score[1]
@@ -103,7 +104,7 @@ class Board:
                 self.game.rules.get_valid_move(self.game.board.grid, 2) == []:
             box = r.Rectangle(self.game.screen, self.game.screen_width * 0.1, self.game.screen_height * 0.2 + 25,
                               self.game.screen_width*0.8, self.game.screen_height * 0.6, (180, 150, 0))
-            box.drawRect()
+            box.draw_rect()
 
             if black > white:
                 winner = "Black"
