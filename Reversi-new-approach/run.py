@@ -157,7 +157,7 @@ class Game:
                     # pygame.display.flip()
 
                 # after closing single game -> back to menu
-                file = open("games_results.txt", "a+")
+                file = open("games_results.json", "a+")
                 file.write(json.dumps(self.board.save_game_info(), indent=3))
                 # print(json.dumps(self.board.save_game_info(), indent=3))
                 self.game_status = False
