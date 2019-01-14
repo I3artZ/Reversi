@@ -1,7 +1,7 @@
 # Reversi
 Game of Reversi
 
-- resizeable board
+- resizable board
 - bot players implemented with use of:
   1. Minmax algorithm 
   2. Monte Carlo Tree Search algorithm
