@@ -10,7 +10,6 @@ l_grey = (220, 220, 200)
 black = (0, 0, 0)
 yellow = (240, 190, 0)
 
-
 class Menu:
 
     def __init__(self, game):
@@ -122,17 +121,19 @@ class Menu:
                 for i in self.player_1:
                     i.pressed = False
                 rect.pressed = True
-                """if rect.player_type == "MinMax":
+                if rect.player_type == "MinMax" and rect.pressed:
                     input_value = pyautogui.prompt("BLACK player - chose depth (default=3): ",
                                                    "1st player | MinMax depth")
 
                     self.player_1_depth_of_search = input_value
+                    self.player_1_iter_max = None
 
-                if rect.player_type == "MonteCarlo":
-                    input_value = pyautogui.prompt(
+                if rect.player_type == "MonteCarlo" and rect.pressed:
+                    input_value_2 = pyautogui.prompt(
                         "BLACK player - chose maximum number of iterations(default=1000): ",
                         "1st player | Monte Carlo max iterations")
-                    self.player_1_iter_max = int(input_value)"""
+                    self.player_1_iter_max = input_value_2
+                    self.player_1_depth_of_search = None
 
         for rect in self.player_2:
             if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + \
@@ -140,16 +141,18 @@ class Menu:
                 for i in self.player_2:
                     i.pressed = False
                 rect.pressed = True
-                """if rect.player_type == "MinMax":
+                if rect.player_type == "MinMax" and rect.pressed:
                     input_value = pyautogui.prompt("WHITE player - chose depth (default=3): ",
                                                    "2nd player | MinMax depth")
                     self.player_2_depth_of_search = input_value
+                    self.player_2_iter_max = None
 
-                if rect.player_type == "MonteCarlo":
+                if rect.player_type == "MonteCarlo" and rect.pressed:
                     input_value = pyautogui.prompt(
                         "WHITE player - chose maximum number of iterations(default=1000) for 2nd player: ",
                         "2nd player | Monte Carlo max iterations")
-                    self.player_2_iter_max = input_value"""
+                    self.player_2_iter_max = input_value
+                    self.player_2_depth_of_search = None
 
         for rect in self.board_size:
             if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + \
@@ -167,3 +170,4 @@ class Menu:
             if self.rect_17.top < self.game.pos[1] < self.rect_17.top + self.rect_17.height:
                 self.game.menu.state = False
                 self.game.game_status = True
+

@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, json, sys
 from menu import Menu
 from board import Board
 from rules import Rules
@@ -124,7 +124,8 @@ class Game:
                     if self.turn == 1:
                         if isinstance(self.player_1, Human):
                             #print(self.rules.points_for_mobility(self.board.grid, self.turn))
-                            if pygame.mouse.get_pressed()[0] == 1 and self.rules.is_valid_move(self.board.grid, 1, column, row):
+                            if pygame.mouse.get_pressed()[0] == 1 and self.rules.is_valid_move(
+                                    self.board.grid, 1, column, row):
                                 self.player_1.make_a_move(row, column)
                                 if self.rules.get_valid_move(self.board.grid, 2):
                                     self.turn = 2
@@ -140,7 +141,8 @@ class Game:
                     if self.turn == 2:
                         if isinstance(self.player_2, Human):
                             # print(self.rules.points_for_mobility(self.board.grid, self.turn))
-                            if pygame.mouse.get_pressed()[0] == 1 and self.rules.is_valid_move(self.board.grid, 2, column, row):
+                            if pygame.mouse.get_pressed()[0] == 1 and self.rules.is_valid_move(
+                                    self.board.grid, 2, column, row):
                                 self.player_2.make_a_move(row, column)
                                 if self.rules.get_valid_move(self.board.grid, 1):
                                     self.turn = 1
@@ -155,6 +157,9 @@ class Game:
                     # pygame.display.flip()
 
                 # after closing single game -> back to menu
+                file = open("games_results.txt", "a+")
+                file.write(json.dumps(self.board.save_game_info(), indent=3))
+                # print(json.dumps(self.board.save_game_info(), indent=3))
                 self.game_status = False
                 self.menu.state = True
 

@@ -6,9 +6,11 @@ from math import log, sqrt
 
 class Human:
     """ human player """
-    def __init__(self, game, player, iter_max=None, depth_of_search=None):
+    def __init__(self, game, player, **kwargs):
         self.game = game
         self.player = player
+        setattr(self.game.menu, "player_" + str(player) + "_iter_max", None)
+        setattr(self.game.menu, "player_" + str(player) + "_depth_of_search", None)
 
     def make_a_move(self, row, column):
             self.game.rules.make_move(self.game.board.grid, self.player, column, row)
@@ -17,7 +19,7 @@ class Human:
 
 class MinMax:
     """ player using Minmax algorithm """
-    def __init__(self, game, player, iter_max=None, depth_of_search=3):
+    def __init__(self, game, player, depth_of_search=3, **kwargs):
         self.game = game
         self.player = player
         self.min_eval_board = float('inf')
@@ -83,7 +85,7 @@ class MinMax:
 
 class MonteCarlo:
     """ player using MCTS algorithm """
-    def __init__(self, game, player, iter_max=1000, depth_of_search=None):
+    def __init__(self, game, player, iter_max=1000, **kwargs):
         self.game = game
         self.player = player
         self.iter_max = iter_max

@@ -1,4 +1,4 @@
-import pygame
+import pygame, json
 import reversi_func as f
 import Rectangle as r
 
@@ -102,11 +102,31 @@ class Board:
 
             if black > white:
                 winner = "Black wins!"
+                self.winner = "Black"
             elif black < white:
                 winner = "White wins!"
+                self.winner = "White"
             else:
                 winner = "It's a draw!"
+                self.winner = "Draw"
 
             text_surface, text_rect = f.text_objects(winner, font, (255, 255, 255))
             text_rect.center = (box.left + box.width / 2), (box.top + box.height / 2)
             self.game.screen.blit(text_surface, text_rect)
+
+    def save_game_info(self):
+            game_info = {
+                "player_1": {
+                    "player_type": self.game.player_1_type[:self.game.player_1_type.index("(")],
+                    "minmax_dept_of_search": self.game.menu.player_1_depth_of_search,
+                    "montecarlo_iter_max": self.game.menu.player_1_iter_max},
+                "player_2": {
+                    "player_type": self.game.player_2_type[:self.game.player_2_type.index("(")],
+                    "minmax_dept_of_search": self.game.menu.player_2_depth_of_search,
+                    "montecarlo_iter_max": self.game.menu.player_2_iter_max},
+                "board_size": self.grid_size,
+                "score": self.game.score,
+                "winner": self.winner
+            }
+            # print(game_info)
+            return game_info
