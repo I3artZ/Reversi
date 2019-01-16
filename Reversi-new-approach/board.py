@@ -1,6 +1,7 @@
 import pygame, json
 import reversi_func as f
 import Rectangle as r
+import time
 
 lines = (0, 0, 0)
 black = (20, 20, 20)
@@ -19,6 +20,7 @@ class Board:
         self.cell_size = 50
         self.grid_size = self.game.grid_size
         self.grid = [[0 for x in range(self.grid_size)] for y in range(self.grid_size)]
+        self.winner = None
         # starting positions
         a = int(self.grid_size/2-1)
         b = int(self.grid_size/2)
@@ -29,6 +31,7 @@ class Board:
         self.grid[b][b] = 1
 
     def draw(self):
+
         self.game.screen.fill(lines)
 
         # re-size cells to fit the window
@@ -60,7 +63,7 @@ class Board:
                                                            self.margin + 50 + (self.margin + self.cell_size) * row,
                                                            self.cell_size, self.cell_size])
         self.print_score()
-        self.game_end()
+
 
     def print_score(self):
         black = self.game.score[1]
@@ -113,20 +116,29 @@ class Board:
             text_surface, text_rect = f.text_objects(winner, font, (255, 255, 255))
             text_rect.center = (box.left + box.width / 2), (box.top + box.height / 2)
             self.game.screen.blit(text_surface, text_rect)
+            pygame.display.update()
+
+            # to be deleted on menu version
+            self.game.game_status = False
 
     def save_game_info(self):
-            game_info = {
-                "player_1": {
-                    "player_type": self.game.player_1_type[:self.game.player_1_type.index("(")],
-                    "minmax_dept_of_search": self.game.menu.player_1_depth_of_search,
-                    "montecarlo_iter_max": self.game.menu.player_1_iter_max},
-                "player_2": {
-                    "player_type": self.game.player_2_type[:self.game.player_2_type.index("(")],
-                    "minmax_dept_of_search": self.game.menu.player_2_depth_of_search,
-                    "montecarlo_iter_max": self.game.menu.player_2_iter_max},
-                "board_size": self.grid_size,
-                "score": self.game.score,
-                "winner": self.winner
-            }
-            # print(game_info)
-            return game_info
+        if self.winner:
+            with open('games_results.json', 'r+') as results:
+                game_info = json.load(results)
+                results.close()
+                game_info["results"].append({
+                    "player_1": {
+                        "player_type": self.game.player_1_type[:self.game.player_1_type.index("(")],
+                        "minmax_dept_of_search": self.game.player_1.depth_of_search,
+                        "montecarlo_iter_max": self.game.player_1.iter_max},
+                    "player_2": {
+                        "player_type": self.game.player_2_type[:self.game.player_2_type.index("(")],
+                        "minmax_dept_of_search": self.game.player_2.depth_of_search,
+                        "montecarlo_iter_max": self.game.player_2.iter_max},
+                    "board_size": self.grid_size,
+                    "score": self.game.score,
+                    "winner": self.winner
+                })
+            with open('games_results.json', 'w+') as results:
+                results.write(json.dumps(game_info, indent=3))
+

@@ -10,14 +10,13 @@ l_grey = (220, 220, 200)
 black = (0, 0, 0)
 yellow = (240, 190, 0)
 
+
 class Menu:
 
     def __init__(self, game):
         self.game = game
         self.state = True
         screen = self.game.screen
-        self.player_1_depth_of_search, self.player_2_depth_of_search = 3, 3
-        self.player_1_iter_max, self.player_2_iter_max = 1000, 1000
 
         # players buttons
         # 1st player
@@ -33,23 +32,6 @@ class Menu:
         for i in range(13, 17):
             setattr(self, "rect_" + str(i), r.Rectangle(screen, 545, 120+(i-13)*80, 90, 70, grey))
 
-        """self.rect_1 = r.Rectangle(screen, 50, 120, 160, 70, grey)
-        self.rect_2 = r.Rectangle(screen, 50, 200, 160, 70, grey)
-        self.rect_3 = r.Rectangle(screen, 50, 280, 160, 70, grey)
-        self.rect_4 = r.Rectangle(screen, 50, 360, 160, 70, grey)
-        self.rect_5 = r.Rectangle(screen, 235, 120, 160, 70, grey)
-        self.rect_6 = r.Rectangle(screen, 235, 200, 160, 70, grey)
-        self.rect_7 = r.Rectangle(screen, 235, 280, 160, 70, grey)
-        self.rect_8 = r.Rectangle(screen, 235, 360, 160, 70, grey)
-        # board size buttons
-        self.rect_9 = r.Rectangle(screen, 430, 120, 90, 70, grey)
-        self.rect_10 = r.Rectangle(screen, 430, 200, 90, 70, grey)
-        self.rect_11 = r.Rectangle(screen, 430, 280, 90, 70, grey)
-        self.rect_12 = r.Rectangle(screen, 430, 360, 90, 70, grey)
-        self.rect_13 = r.Rectangle(screen, 545, 120, 90, 70, grey)
-        self.rect_14 = r.Rectangle(screen, 545, 200, 90, 70, grey)
-        self.rect_15 = r.Rectangle(screen, 545, 280, 90, 70, grey)
-        self.rect_16 = r.Rectangle(screen, 545, 360, 90, 70, grey)"""
         # play button
         self.rect_17 = r.Rectangle(screen, 660, 200, 90, 150, grey)
         self.rects = [getattr(self, "rect_" + str(i)) for i in range(1, 18)]
@@ -125,15 +107,15 @@ class Menu:
                     input_value = pyautogui.prompt("BLACK player - chose depth (default=3): ",
                                                    "1st player | MinMax depth")
 
-                    self.player_1_depth_of_search = input_value
-                    self.player_1_iter_max = None
+                    self.game.player_1_depth_of_search = input_value
+                    self.game.player_1_iter_max = None
 
                 if rect.player_type == "MonteCarlo" and rect.pressed:
                     input_value_2 = pyautogui.prompt(
                         "BLACK player - chose maximum number of iterations(default=1000): ",
                         "1st player | Monte Carlo max iterations")
-                    self.player_1_iter_max = input_value_2
-                    self.player_1_depth_of_search = None
+                    self.game.player_1_iter_max = input_value_2
+                    self.game.player_1_depth_of_search = None
 
         for rect in self.player_2:
             if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + \
@@ -144,15 +126,15 @@ class Menu:
                 if rect.player_type == "MinMax" and rect.pressed:
                     input_value = pyautogui.prompt("WHITE player - chose depth (default=3): ",
                                                    "2nd player | MinMax depth")
-                    self.player_2_depth_of_search = input_value
-                    self.player_2_iter_max = None
+                    self.game.player_2_depth_of_search = input_value
+                    self.game.player_2_iter_max = None
 
                 if rect.player_type == "MonteCarlo" and rect.pressed:
                     input_value = pyautogui.prompt(
                         "WHITE player - chose maximum number of iterations(default=1000) for 2nd player: ",
                         "2nd player | Monte Carlo max iterations")
-                    self.player_2_iter_max = input_value
-                    self.player_2_depth_of_search = None
+                    self.game.player_2_iter_max = input_value
+                    self.game.player_2_depth_of_search = None
 
         for rect in self.board_size:
             if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + \
@@ -170,4 +152,5 @@ class Menu:
             if self.rect_17.top < self.game.pos[1] < self.rect_17.top + self.rect_17.height:
                 self.game.menu.state = False
                 self.game.game_status = True
+                self.game.game_start()
 

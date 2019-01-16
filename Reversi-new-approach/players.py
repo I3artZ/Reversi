@@ -9,8 +9,10 @@ class Human:
     def __init__(self, game, player, **kwargs):
         self.game = game
         self.player = player
-        setattr(self.game.menu, "player_" + str(player) + "_iter_max", None)
-        setattr(self.game.menu, "player_" + str(player) + "_depth_of_search", None)
+        #setattr(self.game.menu, "player_" + str(player) + "_iter_max", None)
+        #setattr(self.game.menu, "player_" + str(player) + "_depth_of_search", None)
+        self.depth_of_search = None
+        self.iter_max = None
 
     def make_a_move(self, row, column):
             self.game.rules.make_move(self.game.board.grid, self.player, column, row)
@@ -25,6 +27,7 @@ class MinMax:
         self.min_eval_board = float('inf')
         self.max_eval_board = -float('inf')
         self.depth_of_search = depth_of_search
+        self.iter_max = None
         #print(self.depth_of_search)
 
     def minmax(self, board, player, depth, maximizing_player):
@@ -89,6 +92,7 @@ class MonteCarlo:
         self.game = game
         self.player = player
         self.iter_max = iter_max
+        self.depth_of_search = None
 
     def make_a_move(self, *args):
         node = self.Node(self.game, self.player)
