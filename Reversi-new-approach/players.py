@@ -39,17 +39,17 @@ class MinMax:
             best_value = self.max_eval_board
             for y, x in possible_moves:
                 dupe_board = copy.deepcopy(board)
-                points_for_mobility = self.game.rules.points_for_mobility(dupe_board, self.game.turn)[y, x]
+                #points_for_mobility = self.game.rules.points_for_mobility(dupe_board, self.game.turn)[y, x]
                 self.game.rules.make_move(dupe_board, player, y, x)
-                v = self.minmax(dupe_board, player, depth - 1, False) + points_for_mobility
+                v = self.minmax(dupe_board, player, depth - 1, False) #+ points_for_mobility
                 best_value = max(best_value, v)
         else:  # minimizingPlayer
             best_value = self.min_eval_board
             for y, x in possible_moves:
                 dupe_board = copy.deepcopy(board)
-                points_for_mobility = self.game.rules.points_for_mobility(dupe_board, self.game.turn)[y, x]
+                #points_for_mobility = self.game.rules.points_for_mobility(dupe_board, self.game.turn)[y, x]
                 self.game.rules.make_move(dupe_board, player, y, x)
-                v = self.minmax(dupe_board, player, depth - 1, True) + points_for_mobility
+                v = self.minmax(dupe_board, player, depth - 1, True) #+ points_for_mobility
                 best_value = min(best_value, v)
         return best_value
 
@@ -69,9 +69,9 @@ class MinMax:
             for y, x in possible_moves:
                 #print(possible_moves)
                 dupe_board = copy.deepcopy(self.game.board.grid)
-                points_for_mobility = self.game.rules.points_for_mobility(dupe_board, self.game.turn)[y, x]
+                #points_for_mobility = self.game.rules.points_for_mobility(dupe_board, self.game.turn)[y, x]
                 self.game.rules.make_move(dupe_board, self.player, y, x)
-                score = self.minmax(dupe_board, self.player, self.depth_of_search, True) + points_for_mobility
+                score = self.minmax(dupe_board, self.player, self.depth_of_search, True)# + points_for_mobility
                 if score > best_score:
                     best_y = y
                     best_x = x

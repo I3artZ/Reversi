@@ -131,6 +131,12 @@ class Game:
                                     self.turn = 2
                         else:
                             self.player_1.make_a_move(row, column)
+                            # heuristics normalization testing
+                            print('Current score: '+str(self.rules.get_score_of_board(self.board.grid)))
+                            checksum = self.rules.get_score_of_board(self.board.grid)[1] + self.rules.get_score_of_board(self.board.grid)[2]
+                            print('Checksum: '+str(checksum))
+                            # mobility testing
+                            print('Points for mobility '+str(self.rules.points_for_mobility(self.board.grid)))
                             if self.rules.get_valid_move(self.board.grid, 2):
                                 self.turn = 2
 
@@ -148,6 +154,12 @@ class Game:
                                     self.turn = 1
                         else:
                             self.player_2.make_a_move(row, column)
+                            # heuristics normalization testing
+                            print('Current score: '+str(self.rules.get_score_of_board(self.board.grid)))
+                            checksum = self.rules.get_score_of_board(self.board.grid)[1] + self.rules.get_score_of_board(self.board.grid)[2]
+                            print('Checksum: '+str(checksum))
+                            # mobility testing
+                            print('Points for mobility '+str(self.rules.points_for_mobility(self.board.grid)))
                             if self.rules.get_valid_move(self.board.grid, 1):
                                 self.turn = 1
 
