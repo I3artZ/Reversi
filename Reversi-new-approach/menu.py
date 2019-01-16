@@ -1,144 +1,173 @@
 import pygame
 import reversi_func as f
 import Rectangle as r
+import pyautogui
+
 # some colors definitions
 grey = (180, 180, 155)
 white = (255, 255, 255)
 l_grey = (220, 220, 200)
 black = (0, 0, 0)
-red = (255, 0, 0)
-
+yellow = (240, 190, 0)
 
 class Menu:
 
     def __init__(self, game):
         self.game = game
         self.state = True
+        screen = self.game.screen
+        self.player_1_depth_of_search, self.player_2_depth_of_search = 3, 3
+        self.player_1_iter_max, self.player_2_iter_max = 1000, 1000
+
         # players buttons
-        self.rect_1 = r.Rectangle(self.game.screen, 50, 120, 160, 70, grey)
-        self.rect_2 = r.Rectangle(self.game.screen, 50, 200, 160, 70, grey)
-        self.rect_3 = r.Rectangle(self.game.screen, 50, 280, 160, 70, grey)
-        self.rect_4 = r.Rectangle(self.game.screen, 50, 360, 160, 70, grey)
-        self.rect_5 = r.Rectangle(self.game.screen, 235, 120, 160, 70, grey)
-        self.rect_6 = r.Rectangle(self.game.screen, 235, 200, 160, 70, grey)
-        self.rect_7 = r.Rectangle(self.game.screen, 235, 280, 160, 70, grey)
-        self.rect_8 = r.Rectangle(self.game.screen, 235, 360, 160, 70, grey)
+        # 1st player
+        for i in range(1, 5):
+            setattr(self, "rect_" + str(i), r.Rectangle(screen, 50, 120+(i-1)*80, 160, 70, grey))
+        # 2nd player
+        for i in range(5, 9):
+            setattr(self, "rect_" + str(i), r.Rectangle(screen, 235, 120+(i-5)*80, 160, 70, grey))
+        # board size
+        for i in range(9, 13):
+            setattr(self, "rect_" + str(i), r.Rectangle(screen, 430, 120+(i-9)*80, 90, 70, grey))
+        # board size
+        for i in range(13, 17):
+            setattr(self, "rect_" + str(i), r.Rectangle(screen, 545, 120+(i-13)*80, 90, 70, grey))
+
+        """self.rect_1 = r.Rectangle(screen, 50, 120, 160, 70, grey)
+        self.rect_2 = r.Rectangle(screen, 50, 200, 160, 70, grey)
+        self.rect_3 = r.Rectangle(screen, 50, 280, 160, 70, grey)
+        self.rect_4 = r.Rectangle(screen, 50, 360, 160, 70, grey)
+        self.rect_5 = r.Rectangle(screen, 235, 120, 160, 70, grey)
+        self.rect_6 = r.Rectangle(screen, 235, 200, 160, 70, grey)
+        self.rect_7 = r.Rectangle(screen, 235, 280, 160, 70, grey)
+        self.rect_8 = r.Rectangle(screen, 235, 360, 160, 70, grey)
         # board size buttons
-        self.rect_9 = r.Rectangle(self.game.screen, 430, 120, 90, 70, grey)
-        self.rect_10 = r.Rectangle(self.game.screen, 430, 200, 90, 70, grey)
-        self.rect_11 = r.Rectangle(self.game.screen, 430, 280, 90, 70, grey)
-        self.rect_12 = r.Rectangle(self.game.screen, 430, 360, 90, 70, grey)
-        self.rect_13 = r.Rectangle(self.game.screen, 545, 120, 90, 70, grey)
-        self.rect_14 = r.Rectangle(self.game.screen, 545, 200, 90, 70, grey)
-        self.rect_15 = r.Rectangle(self.game.screen, 545, 280, 90, 70, grey)
-        self.rect_16 = r.Rectangle(self.game.screen, 545, 360, 90, 70, grey)
-        # ok button
-        self.rect_17 = r.Rectangle(self.game.screen, 660, 200, 90, 150, grey)
-        self.rects = [self.rect_1, self.rect_2, self.rect_3, self.rect_4, self.rect_5, self.rect_6, self.rect_7,
-                      self.rect_8, self.rect_9 ,self.rect_10, self.rect_11, self.rect_12, self.rect_13, self.rect_14,
-                      self.rect_15, self.rect_16, self.rect_17]
-        self.player_1 = self.rects[0:4]
-        self.player_2 = self.rects[4:8]
+        self.rect_9 = r.Rectangle(screen, 430, 120, 90, 70, grey)
+        self.rect_10 = r.Rectangle(screen, 430, 200, 90, 70, grey)
+        self.rect_11 = r.Rectangle(screen, 430, 280, 90, 70, grey)
+        self.rect_12 = r.Rectangle(screen, 430, 360, 90, 70, grey)
+        self.rect_13 = r.Rectangle(screen, 545, 120, 90, 70, grey)
+        self.rect_14 = r.Rectangle(screen, 545, 200, 90, 70, grey)
+        self.rect_15 = r.Rectangle(screen, 545, 280, 90, 70, grey)
+        self.rect_16 = r.Rectangle(screen, 545, 360, 90, 70, grey)"""
+        # play button
+        self.rect_17 = r.Rectangle(screen, 660, 200, 90, 150, grey)
+        self.rects = [getattr(self, "rect_" + str(i)) for i in range(1, 18)]
+
+        self.player_1 = self.rects[:3]  # in progress button excluded
+        self.player_2 = self.rects[4:7]  # in progress button excluded
         self.board_size = self.rects[8:16]
 
     def draw(self):
-        title_font = pygame.font.SysFont("freesansbold.ttf", 45)
-        smallText = pygame.font.Font("freesansbold.ttf", 20)
+        # draw menu buttons and assign properties to them
+        # settings fonts
+        title_font = pygame.font.SysFont("freesansbold.ttf", 45, True)
+        subtitle_font = pygame.font.SysFont("freesansbold.ttf", 35, True)
+        small_text = pygame.font.Font("freesansbold.ttf", 20)
+        little_text = pygame.font.Font("freesansbold.ttf", 15)
+        # rendering welcoming msg
+        menu_title = title_font.render("Welcome to a game of Othello!", False, white)
+        menu_subtitle = subtitle_font.render("Choose your settings", False, black)
+        column_name_1 = little_text.render("Player_1", False, black)
+        column_name_2 = little_text.render("Player_2", False, white)
+        column_name_3 = little_text.render("Board size", False, black)
 
+        self.game.screen.blit(menu_title, (140, 20))
+        self.game.screen.blit(menu_subtitle, (270, 55))
+        self.game.screen.blit(column_name_1, (105, 95))
+        self.game.screen.blit(column_name_2, (285, 95))
+        self.game.screen.blit(column_name_3, (490, 95))
 
-        title_font = pygame.font.SysFont("freesansbold.ttf",45,True)
-        smallText = pygame.font.Font("freesansbold.ttf", 20)
+        for i in range(1, 18):
+            rect = getattr(self, "rect_" + str(i))
+            rect.draw_rect()
 
-        menu_title = title_font.render("Hello to a game of Reversi!", False, white)
-        menu_subtitle = smallText.render("Choose your settings", False, black)
-        self.game.screen.blit(menu_title, (175, 40))
-        self.game.screen.blit(menu_subtitle, (300, 85))
+            if i == 1 or i == 5:
+                rect.player_type = 'Human'
+            if i == 2 or i == 6:
+                rect.player_type = 'MinMax'
+            if i == 3 or i == 7:
+                rect.player_type = 'MonteCarlo'
+            if i == 4 or i == 8:
+                rect.player_type = 'In progress...'
 
-        for rect in self.rects:
-            rect.drawRect()
-            if rect == self.rect_1 or rect == self.rect_5:
-                rect.player_type = 'human'
-                textSurface, textRect = f.text_objects("Human", smallText)
-            if rect == self.rect_2 or rect == self.rect_6:
-                rect.player_type = 'minmax'
-                textSurface, textRect = f.text_objects("Minmax", smallText)
-            if rect == self.rect_3 or rect == self.rect_7:
-                rect.player_type = 'monte carlo'
-                textSurface, textRect = f.text_objects("Monte Carlo", smallText)
-            if rect == self.rect_4 or rect == self.rect_8:
-                rect.player_type = 'in progess'
-                textSurface, textRect = f.text_objects("In progress...", smallText)
-            if rect == self.rect_9:
-                rect.size = 8
-                textSurface, textRect = f.text_objects("8 x 8", smallText)
-            if rect == self.rect_10:
-                rect.size = 10
-                textSurface, textRect = f.text_objects("10 x 10", smallText)
-            if rect == self.rect_11:
-                rect.size = 12
-                textSurface, textRect = f.text_objects("12 x 12", smallText)
-            if rect == self.rect_12:
-                rect.size = 14
-                textSurface, textRect = f.text_objects("14 x 14", smallText)
-            if rect == self.rect_13:
-                rect.size = 16
-                textSurface, textRect = f.text_objects("16 x 16", smallText)
-            if rect == self.rect_14:
-                rect.size = 18
-                textSurface, textRect = f.text_objects("18 x 18", smallText)
-            if rect == self.rect_15:
-                rect.size = 20
-                textSurface, textRect = f.text_objects("20 x 20", smallText)
-            if rect == self.rect_16:
-                rect.size = 30
-                textSurface, textRect = f.text_objects("30 x 30", smallText)
+            text_surface, text_rect = f.text_objects(rect.player_type, small_text)
+
+            if i > 8:
+                rect.size = 4 + (i-9)*2
+                text_surface, text_rect = f.text_objects(str(rect.size) + "x" + str(rect.size), small_text)
             if rect == self.rect_17:
-                textSurface, textRect = f.text_objects("Play", smallText)
-            textRect.center = (rect.left + rect.width / 2), (rect.top + rect.height / 2)
-            self.game.screen.blit(textSurface, textRect)
+                text_surface, text_rect = f.text_objects("Play", small_text)
+
+            text_rect.center = (rect.left + rect.width / 2), (rect.top + rect.height / 2)
+            self.game.screen.blit(text_surface, text_rect)
 
     def highlight(self):
-        # make it brighter!
+        # highlight button on which cursor is located
         for rect in self.rects:
-            if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + rect.height:
+            if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + \
+                    rect.height:
                 rect.color = l_grey
             elif rect.pressed:
-                rect.color = red
+                rect.color = yellow
             else:
                 rect.color = grey
 
     def press_button(self):
-
+        # activate chosen button. From each button category only one can be activated.
         for rect in self.player_1:
-            if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + rect.height:
+            if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + \
+                    rect.height:
                 for i in self.player_1:
                     i.pressed = False
                 rect.pressed = True
+                if rect.player_type == "MinMax" and rect.pressed:
+                    input_value = pyautogui.prompt("BLACK player - chose depth (default=3): ",
+                                                   "1st player | MinMax depth")
+
+                    self.player_1_depth_of_search = input_value
+                    self.player_1_iter_max = None
+
+                if rect.player_type == "MonteCarlo" and rect.pressed:
+                    input_value_2 = pyautogui.prompt(
+                        "BLACK player - chose maximum number of iterations(default=1000): ",
+                        "1st player | Monte Carlo max iterations")
+                    self.player_1_iter_max = input_value_2
+                    self.player_1_depth_of_search = None
 
         for rect in self.player_2:
-            if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + rect.height:
+            if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + \
+                    rect.height:
                 for i in self.player_2:
                     i.pressed = False
                 rect.pressed = True
+                if rect.player_type == "MinMax" and rect.pressed:
+                    input_value = pyautogui.prompt("WHITE player - chose depth (default=3): ",
+                                                   "2nd player | MinMax depth")
+                    self.player_2_depth_of_search = input_value
+                    self.player_2_iter_max = None
+
+                if rect.player_type == "MonteCarlo" and rect.pressed:
+                    input_value = pyautogui.prompt(
+                        "WHITE player - chose maximum number of iterations(default=1000) for 2nd player: ",
+                        "2nd player | Monte Carlo max iterations")
+                    self.player_2_iter_max = input_value
+                    self.player_2_depth_of_search = None
 
         for rect in self.board_size:
-            if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + rect.height:
+            if rect.left < self.game.pos[0] < rect.width + rect.left and rect.top < self.game.pos[1] < rect.top + \
+                    rect.height:
                 for i in self.board_size:
                     i.pressed = False
                 rect.pressed = True
 
-        a = [1 for rect in self.rects if rect.pressed]
-        if sum(a) == 3 and self.rect_17.left < self.game.pos[0] < self.rect_17.width + self.rect_17.left:
-            if self.rect_17.top < self.game.pos[1] < self.rect_17.top + self.rect_17.height:
-                self.rect_17.color = red
-                self.game.menu.state = False
-                self.game.game_status = True
+        self.play()
 
     def play(self):
-        a = [1 for rect in self.rects if rect.pressed]
-        if sum(a) == 3 and self.rect_17.left < self.game.pos[0] < self.rect_17.width + self.rect_17.left:
+        # starting the game after clicking on play button if all settings have been chosen
+        pressed_keys = [1 for rect in self.rects if rect.pressed]
+        if sum(pressed_keys) == 3 and self.rect_17.left < self.game.pos[0] < self.rect_17.width + self.rect_17.left:
             if self.rect_17.top < self.game.pos[1] < self.rect_17.top + self.rect_17.height:
                 self.game.menu.state = False
                 self.game.game_status = True
-
 
