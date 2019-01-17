@@ -2,39 +2,19 @@
    "results": [
       {
          "player_1": {
-            "player_type": "MinMax",
-            "minmax_dept_of_search": "2",
-            "montecarlo_iter_max": null
-         },
-         "player_2": {
-            "player_type": "MinMax",
-            "minmax_dept_of_search": "2",
-            "montecarlo_iter_max": null
-         },
-         "board_size": 4,
-         "score": {
-            "1": 1,
-            "2": 15
-         },
-         "winner": "White"
-      },
-      {
-         "player_1": {
-            "player_type": "MinMax",
-            "minmax_dept_of_search": 2,
-            "montecarlo_iter_max": null
-         },
-         "player_2": {
-            "player_type": "MonteCarlo",
+            "player_type": "Human",
             "minmax_dept_of_search": null,
-            "montecarlo_iter_max": 100
+            "montecarlo_iter_max": null,
+            "avg_move_time": 0,
+            "total_time": 0
          },
-         "board_size": 4,
-         "score": {
-            "1": 2,
-            "2": 14
-         },
-         "winner": "White"
+         "player_2": {
+            "player_type": "Human",
+            "minmax_dept_of_search": null,
+            "montecarlo_iter_max": null,
+            "avg_move_time": 0,
+            "total_time": 0
+         }
       }
    ]
 }

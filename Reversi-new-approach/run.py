@@ -23,11 +23,12 @@ class Game:
         self.screen_height = 500
         self.player_1_depth_of_search, self.player_2_depth_of_search = 3, 3
         self.player_1_iter_max, self.player_2_iter_max = 1000, 1000
+        self.p_1_move_times, self.p_2_move_times = [], []
 
         f.center_window(self)
         pygame.display.set_caption("Reversi")
 
-        # self.clock = pygame.time.Clock()
+        #self.clock = pygame.time.Clock()
         self.pos = []
         self.close = False
         self.game_status = False
@@ -110,6 +111,7 @@ class Game:
 
             while pygame.QUIT not in [event.type for event in pygame.event.get()] \
                     and not pygame.key.get_pressed()[pygame.K_ESCAPE] and self.game_status:
+                start = time.time()
                 self.score = self.rules.points_for_tiles(self.board.grid)
                 self.pos = pygame.mouse.get_pos()
                 x = self.pos[0]
@@ -126,15 +128,21 @@ class Game:
                 #print(self.rules.points_for_mobility(self.board.grid, self.turn))
 
                 if self.turn == 1:
+
                     if isinstance(self.player_1, Human):
                         #print(self.rules.points_for_mobility(self.board.grid, self.turn))
                         if pygame.mouse.get_pressed()[0] == 1 and self.rules.is_valid_move(
                                 self.board.grid, 1, column, row):
                             self.player_1.make_a_move(row, column)
+                            self.p_1_move_times.append(0)
                             if self.rules.get_valid_move(self.board.grid, 2):
                                 self.turn = 2
                     else:
+                        # computer move
+                        start = time.time()
                         self.player_1.make_a_move(row, column)
+                        end = time.time()
+                        self.p_1_move_times.append(end - start)
                         if self.rules.get_valid_move(self.board.grid, 2):
                             self.turn = 2
 
@@ -143,27 +151,35 @@ class Game:
                     pygame.display.update()
 
                 if self.turn == 2:
+
                     if isinstance(self.player_2, Human):
                         # print(self.rules.points_for_mobility(self.board.grid, self.turn))
                         if pygame.mouse.get_pressed()[0] == 1 and self.rules.is_valid_move(
                                 self.board.grid, 2, column, row):
                             self.player_2.make_a_move(row, column)
+                            self.p_2_move_times.append(0)
                             if self.rules.get_valid_move(self.board.grid, 1):
                                 self.turn = 1
                     else:
+                        # computer move
+                        start = time.time()
                         self.player_2.make_a_move(row, column)
+                        end = time.time()
+                        self.p_2_move_times.append(end-start)
                         if self.rules.get_valid_move(self.board.grid, 1):
                             self.turn = 1
 
                     self.score = self.rules.points_for_tiles(self.board.grid)
                     self.board.draw()
-                    self.board.game_end()
                     pygame.display.update()
 
+                    #self.board.game_end()
                     #pygame.display.update()
+
                 # pygame.display.flip()
+                self.board.save_game_info()
             self.game_status = False
-            self.board.save_game_info()
+            #self.board.save_game_info()
 
             # after closing single game -> back to menu
             #self.game_status = False

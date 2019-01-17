@@ -1,7 +1,7 @@
 import pygame, json
 import reversi_func as f
 import Rectangle as r
-import time
+from statistics import mean
 
 lines = (0, 0, 0)
 black = (20, 20, 20)
@@ -63,6 +63,7 @@ class Board:
                                                            self.margin + 50 + (self.margin + self.cell_size) * row,
                                                            self.cell_size, self.cell_size])
         self.print_score()
+        self.game_end()
 
 
     def print_score(self):
@@ -116,7 +117,7 @@ class Board:
             text_surface, text_rect = f.text_objects(winner, font, (255, 255, 255))
             text_rect.center = (box.left + box.width / 2), (box.top + box.height / 2)
             self.game.screen.blit(text_surface, text_rect)
-            pygame.display.update()
+            #pygame.display.update()
 
             # to be deleted on menu version
             self.game.game_status = False
@@ -130,11 +131,15 @@ class Board:
                     "player_1": {
                         "player_type": self.game.player_1_type[:self.game.player_1_type.index("(")],
                         "minmax_dept_of_search": self.game.player_1.depth_of_search,
-                        "montecarlo_iter_max": self.game.player_1.iter_max},
+                        "montecarlo_iter_max": self.game.player_1.iter_max,
+                        "avg_move_time": mean(self.game.p_1_move_times),
+                        "total_time": sum(self.game.p_1_move_times)},
                     "player_2": {
                         "player_type": self.game.player_2_type[:self.game.player_2_type.index("(")],
                         "minmax_dept_of_search": self.game.player_2.depth_of_search,
-                        "montecarlo_iter_max": self.game.player_2.iter_max},
+                        "montecarlo_iter_max": self.game.player_2.iter_max,
+                        "avg_move_time": mean(self.game.p_2_move_times),
+                        "total_time": sum(self.game.p_2_move_times)},
                     "board_size": self.grid_size,
                     "score": self.game.score,
                     "winner": self.winner
