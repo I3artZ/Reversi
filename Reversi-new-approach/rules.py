@@ -76,10 +76,19 @@ class Rules:
         """ Determine the score by counting the tiles. Returns a dictionary with keys '1' and '2'.
         heuristics to be added here"""
 
-        heuristics = [self.points_for_tiles(board), self.points_for_position(board)]
-                     #self.points_for_stability(board)]
-        whites = (heuristics[0][1] + heuristics[1][1])
-        blacks = (heuristics[0][2] + heuristics[1][2])
+        heuristics = [self.points_for_tiles(board), self.points_for_position(board), self.points_for_mobility(board)]
+        #whites = (heuristics[0][1] + heuristics[1][1])
+        #blacks = (heuristics[0][2] + heuristics[1][2])
+
+        weightTiles = 0.3
+        weightPos = 0.3
+        weightMob = 0.4
+        denom = weightTiles * heuristics[0][1] + weightPos * heuristics[1][1] + weightTiles * heuristics[0][
+            2] + weightPos * heuristics[1][2]
+        whites = (weightTiles * heuristics[0][1] + weightPos * heuristics[1][1] + weightMob * heuristics[2]) / denom + \
+                 weightMob * heuristics[2]
+        blacks = (weightTiles * heuristics[0][2] + weightPos * heuristics[1][2] - weightMob * heuristics[2]) / denom - \
+                 weightMob * heuristics[2]
 
         return {1: whites, 2: blacks}
 
@@ -150,9 +159,9 @@ class Rules:
         return {1: whites, 2: blacks}
 
 
-    def points_for_mobility(self, board, player):
-        """ return dict with keys as possibles moves (x, y) of a current player and values as number of possible
-            moves of next player after that move """
+    """def points_for_mobility(self, board, player):
+        #return dict with keys as possibles moves (x, y) of a current player and values as number of possible
+            #moves of next player after that mov
         scores = {}
         grid = copy.deepcopy(board)
         for x, y in self.get_valid_move(grid, player):
@@ -164,11 +173,21 @@ class Rules:
                 self.make_move(grid, player, x, y)
                 scores[(x, y)] = (100-len(self.get_valid_move(grid, 1)))/100
                 grid = copy.deepcopy(board)
-        return scores
+        return scores"""
+
+    def points_for_mobility(self, board):
+        """ return dict with keys as possibles moves (x, y) of a current player and values as number of possible
+            moves of next player after that move """
+        score = 0
+        blackPossibleMoves = len(self.get_valid_move(board, 1))
+        whitePossibleMoves = len(self.get_valid_move(board, 2))
+        if blackPossibleMoves + whitePossibleMoves != 0:
+            # if black has more possible moves then the value is negative
+            score = (whitePossibleMoves - blackPossibleMoves)/(whitePossibleMoves+blackPossibleMoves)
+        return score
 
     def points_for_stability(self, board):
         pass
-
 
     '''def get_hints(self, board, turn):
         for x, y in self.game.rules.get_valid_move(board.grid, turn):
