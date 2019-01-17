@@ -177,6 +177,7 @@ class Game:
                     #pygame.display.update()
 
                 # pygame.display.flip()
+
                 self.board.save_game_info()
             self.game_status = False
             #self.board.save_game_info()

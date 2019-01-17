@@ -125,8 +125,13 @@ class Board:
     def save_game_info(self):
         if self.winner:
             with open('games_results.json', 'r+') as results:
-                game_info = json.load(results)
+                try:
+                    game_info = json.load(results)
+                except json.decoder.JSONDecodeError:
+                    game_info = {"results": []}
+                #print(game_info)
                 results.close()
+
                 game_info["results"].append({
                     "player_1": {
                         "player_type": self.game.player_1_type[:self.game.player_1_type.index("(")],
