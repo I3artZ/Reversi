@@ -96,7 +96,7 @@ class MonteCarlo:
 
     def make_a_move(self, *args):
         node = self.Node(self.game, self.player)
-        move = self.Node.uct(node, self.game, self.game.board.grid, self.player, 1000)
+        move = self.Node.uct(node, self.game, self.game.board.grid, self.player, self.iter_max)
         if move:
             self.game.rules.make_move(self.game.board.grid, self.player, move[0], move[1])
 
